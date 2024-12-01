@@ -40,6 +40,7 @@ const ShopForm = () => {
         inVacations: false,
         openingHours: [],
     });
+    const [maxDays, setMaxDays] = useState(false);
 
     const getShop = (shopId: string) => {
         setLoading(true);
@@ -98,6 +99,11 @@ const ShopForm = () => {
     };
 
     const handleClickAddHours = () => {
+        if (shop.openingHours.length >= 7) {
+            setMaxDays(true);
+            setToast({ severity: 'error', message: 'Vous ne pouvez pas ajouter plus de 7 jours' });
+            return;
+        }
         setShop({ ...shop, openingHours: [...shop.openingHours, { day: 1, openAt: '09:00:00', closeAt: '18:00:00' }] });
     };
 
