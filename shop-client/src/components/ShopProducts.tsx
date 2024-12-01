@@ -54,9 +54,10 @@ const ShopProducts = ({ shopId }: Props) => {
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'space-between',
+                    flexWrap: 'wrap',
                 }}
             >
-                <FormControl sx={{ minWidth: 220 }}>
+                <FormControl sx={{ minWidth: 220, flex: 1, maxWidth: 300 }}>
                     <SelectPaginate
                         value={filter}
                         onChange={setFilter}
@@ -69,16 +70,22 @@ const ShopProducts = ({ shopId }: Props) => {
 
             <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
                 {products?.map((product) => (
-                    <Grid item key={product.id} xs={4}>
+                    <Grid item key={product.id} xs={8} sm={6} md={3} lg={4}>
                         <ProductCard product={product} />
                     </Grid>
                 ))}
             </Grid>
 
             {products?.length !== 0 ? (
-                <Pagination count={count} page={page} siblingCount={1} onChange={handleChangePagination} />
+                <Pagination
+                    count={count}
+                    page={page}
+                    siblingCount={1}
+                    onChange={handleChangePagination}
+                    sx={{ mt: 2 }}
+                />
             ) : (
-                <Typography variant="h6" sx={{ mt: -4 }}>
+                <Typography variant="h6" sx={{ mt: 4 }}>
                     Aucun produit correspondant
                 </Typography>
             )}

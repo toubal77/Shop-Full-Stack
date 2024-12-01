@@ -55,22 +55,32 @@ const ProductDetails = () => {
         <Paper
             elevation={1}
             sx={{
-                position: 'relative',
-                padding: 4,
+                position: 'relative', padding: { xs: 2, sm: 4 }, maxWidth: '100%', margin: 'auto',
+                '@media (max-width: 600px)': {
+                    padding: 2, 
+                },
             }}
         >
             <ActionButtons handleDelete={handleDelete} handleEdit={handleEdit} />
 
-            <Typography variant="h3" sx={{ textAlign: 'center', marginBottom: 3 }}>
+            <Typography
+                variant="h3"
+                sx={{
+                    textAlign: 'center', marginBottom: 3,
+                    fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' },
+                }}
+            >
                 {formattedProduct.name}
             </Typography>
-            <Typography variant="h6">Prix : {priceFormatter(formattedProduct.price)}</Typography>
+            <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.2rem' } }}>
+                Prix : {priceFormatter(formattedProduct.price)}
+            </Typography>
             {formattedProduct.description && (
-                <Typography sx={{ mt: 1.5 }} color="text.secondary">
+                <Typography sx={{ mt: 1.5, fontSize: { xs: '0.9rem', sm: '1rem' } }} color="text.secondary">
                     Description : {formattedProduct.description}
                 </Typography>
             )}
-            <Typography sx={{ mt: 1.5 }}>
+            <Typography sx={{ mt: 1.5, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
                 Boutique :{' '}
                 {formattedProduct.shop?.name ? (
                     <Link to={`/shop/${formattedProduct.shop?.id}`} style={{ color: '#607d8b' }}>
@@ -80,7 +90,7 @@ const ProductDetails = () => {
                     "N'appartient à aucune boutique"
                 )}
             </Typography>
-            <Typography sx={{ mt: 1.5, fontStyle: 'italic' }}>
+            <Typography sx={{ mt: 1.5, fontStyle: 'italic', fontSize: { xs: '0.9rem', sm: '1rem' } }}>
                 Catégories : {''}
                 {formattedProduct.categories.length === 0
                     ? 'Aucune'
