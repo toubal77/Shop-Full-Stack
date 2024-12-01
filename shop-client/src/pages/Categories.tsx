@@ -35,15 +35,17 @@ const Categories = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
-            <Typography variant="h2">Les catégories</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: { xs: 2, sm: 3, md: 4 } }}>
+            <Typography variant="h2" sx={{ fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' }, textAlign: 'center' }}>
+                Les catégories
+            </Typography>
 
             <Box
                 sx={{
                     width: '100%',
                     display: 'flex',
-                    flexDirection: 'row',
                     justifyContent: 'flex-end',
+                    padding: { xs: 2, sm: 3 },
                 }}
             >
                 <Fab variant="extended" color="primary" aria-label="add" onClick={() => navigate('/category/create')}>
@@ -53,9 +55,9 @@ const Categories = () => {
             </Box>
 
             {/* Categories */}
-            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
+            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3} sx={{ width: '100%' }}>
                 {categories?.map((category) => (
-                    <Grid item key={category.id} xs={4}>
+                    <Grid item key={category.id} xs={12} sm={6} md={4}>
                         <CategoryCard category={category} />
                     </Grid>
                 ))}
@@ -63,7 +65,18 @@ const Categories = () => {
 
             {/* Pagination */}
             {categories?.length !== 0 ? (
-                <Pagination count={count} page={page} siblingCount={1} onChange={handleChangePagination} />
+                <Pagination
+                    count={count}
+                    page={page}
+                    siblingCount={1}
+                    onChange={handleChangePagination}
+                    sx={{
+                        marginTop: 3,
+                        '& .MuiPaginationItem-root': {
+                            fontSize: { xs: '0.8rem', sm: '1rem' },
+                        },
+                    }}
+                />
             ) : (
                 <Typography variant="h5" sx={{ mt: -1 }}>
                     Aucune catégorie correspondante
