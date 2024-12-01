@@ -89,11 +89,22 @@ const ShopForm = () => {
     }, [isAddMode]);
 
     const handleChange = (index: number, key: string, value: number | string | undefined) => {
-        const openingHours = shop.openingHours;
-        const openingHour = {
-            ...openingHours[index],
-            [key]: value,
-        };
+        const openingHours = [...shop.openingHours];
+        const openingHour = { ...openingHours[index], [key]: value };
+    
+        if (key === 'openAt' || key === 'closeAt') {
+            const openTime = openingHour.openAt ? openingHour.openAt : openingHours[index].openAt;
+            const closeTime = openingHour.closeAt ? openingHour.closeAt : openingHours[index].closeAt;
+    
+            if (openTime && closeTime && openTime >= closeTime) {
+                setToast({
+                    severity: 'error',
+                    message: "L'heure de fermeture ne peut pas être avant l'heure d'ouverture",
+                });
+                return;
+            }
+        }
+    
         openingHours[index] = openingHour;
         setShop({ ...shop, openingHours });
     };
