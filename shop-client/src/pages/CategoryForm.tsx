@@ -1,4 +1,4 @@
-import { Box, Button, Divider, FormControl, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, FormControl, Paper, TextField, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppContext, useToastContext } from '../context';
@@ -19,6 +19,10 @@ const CategoryForm = () => {
     const [category, setCategory] = useState<MinimalCategory>({
         name: '',
     });
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isTablette = useMediaQuery(theme.breakpoints.down('md'));
 
     const getCategory = (categoryId: string) => {
         setLoading(true);
@@ -82,7 +86,7 @@ const CategoryForm = () => {
 
     return (
         <Paper elevation={1} sx={{ padding: 4 }}>
-            <Typography variant="h2" sx={{ marginBottom: 3, textAlign: 'center' }}>
+            <Typography variant={isMobile ? "h4": isTablette ? "h3": "h2"} sx={{ marginBottom: 3, textAlign: 'center' }}>
                 {isAddMode ? 'Ajouter une catégorie' : 'Modifier la catégorie'}
             </Typography>
 
@@ -105,7 +109,7 @@ const CategoryForm = () => {
                     onChange={(e) => setCategory({ ...category, name: e.target.value })}
                     error={!!errors?.name}
                     helperText={errors?.name}
-                    sx={{ my: 2, width: '75%', ml: 'auto', mr: 'auto' }}
+                    sx={{ my: 2, width: '85%', ml: 'auto', mr: 'auto' }}
                 />
             </FormControl>
 
