@@ -66,7 +66,7 @@ const Home = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, px: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
             <Typography variant={isMobile ? 'h4' : 'h2'} textAlign="center">
                 Les boutiques
             </Typography>
@@ -120,29 +120,29 @@ const Home = () => {
                 <Filters setUrlFilters={setFilters} setSort={setSort} sort={sort} />
             </Box>
 
-           {/* Shops */}
-            <Grid container alignItems="center" justifyContent="center"
-                //rowSpacing={{ xs: 2, sm: 6, md: 4 }} 
-                sx={{
-                    display: 'grid',
-                    gridTemplateColumns: {
-                        xs: '1fr',
-                        sm: 'repeat(auto-fit, minmax(250px, 1fr))',
-                    },
-                    gap: 3,
-                    justifyContent: 'center',
-                }}>
+            {/* Shops */}
+            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3} sx={{ width: '100%' }}>
                 {shops?.map((shop) => (
-                    <Grid item key={shop.id} xs={10} sm={6} md={4}
-                    sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Grid item key={shop.id} xs={12} sm={6} md={4}>
                         <ShopCard shop={shop} />
                     </Grid>
-                    ))}
+                ))}
             </Grid>
 
             {/* Pagination */}
             {shops?.length !== 0 ? (
-                <Pagination count={count} page={page} siblingCount={1} onChange={handleChangePagination} />
+                <Pagination
+                    count={count}
+                    page={page}
+                    siblingCount={1}
+                    onChange={handleChangePagination}
+                    sx={{
+                        marginTop: 3,
+                        '& .MuiPaginationItem-root': {
+                            fontSize: { xs: '0.8rem', sm: '1rem' },
+                        },
+                    }}
+                />
             ) : (
                 <Typography variant="h5" sx={{ mt: -1 }}>
                     Aucune boutique correspondante

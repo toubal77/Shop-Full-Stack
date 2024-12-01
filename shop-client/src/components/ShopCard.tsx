@@ -5,6 +5,7 @@ import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import { Shop } from '../types';
 import { pluralize } from '../utils';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 type Props = {
     shop: Shop;
@@ -13,12 +14,15 @@ type Props = {
 const ShopCard = ({ shop }: Props) => {
     const navigate = useNavigate();
 
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    
     const handleClick = () => {
         navigate(`/shop/${shop.id}`);
     };
 
     return (
-        <Card sx={{ minWidth: 275, cursor: 'pointer' }} onClick={handleClick}>
+        <Card sx={{ minWidth: isMobile ? 275: 175, cursor: 'pointer' }} onClick={handleClick}>
             <CardContent>
                 <Typography variant="h4" color="text.primary" gutterBottom sx={{ textAlign: 'center' }}>
                     {shop.name}
