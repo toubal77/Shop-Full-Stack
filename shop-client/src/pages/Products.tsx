@@ -35,15 +35,17 @@ const Products = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
-            <Typography variant="h2">Les produits</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: { xs: 2, sm: 3, md: 4 } }}>
+            <Typography variant="h2" sx={{ fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' }, textAlign: 'center' }}>
+                Les produits
+            </Typography>
 
             <Box
                 sx={{
                     width: '100%',
                     display: 'flex',
-                    flexDirection: 'row',
                     justifyContent: 'flex-end',
+                    padding: { xs: 2, sm: 3 },
                 }}
             >
                 <Fab variant="extended" color="primary" aria-label="add" onClick={() => navigate('/product/create')}>
@@ -53,9 +55,9 @@ const Products = () => {
             </Box>
 
             {/* Products */}
-            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
+            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3} sx={{ width: '100%' }}>
                 {products?.map((product) => (
-                    <Grid item key={product.id} xs={4}>
+                    <Grid item key={product.id} xs={12} sm={6} md={4}>
                         <ProductCard product={product} displayShop={true} />
                     </Grid>
                 ))}
@@ -63,7 +65,18 @@ const Products = () => {
 
             {/* Pagination */}
             {products?.length !== 0 ? (
-                <Pagination count={count} page={page} siblingCount={1} onChange={handleChangePagination} />
+                <Pagination
+                    count={count}
+                    page={page}
+                    siblingCount={1}
+                    onChange={handleChangePagination}
+                    sx={{
+                        marginTop: 3,
+                        '& .MuiPaginationItem-root': {
+                            fontSize: { xs: '0.8rem', sm: '1rem' },
+                        },
+                    }}
+                />
             ) : (
                 <Typography variant="h5" sx={{ mt: -1 }}>
                     Aucun produit correspondant
