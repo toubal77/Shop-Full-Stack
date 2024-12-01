@@ -133,7 +133,13 @@ const ShopForm = () => {
 
             <Box sx={{ display: 'block', ml: 'auto', mr: 'auto', width: isMobile ? '100%' : '80%', mb: 3 }}>
                 <Divider>Informations de la boutique</Divider>
-                <FormControl sx={{ mt: 2, width: isMobile ? '100%' : '50%' }}>
+                <FormControl sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    ml: 'auto',
+                    mr: 'auto',
+                    width: '70%',
+                    mb: 2, }}>
                     <TextField
                         autoFocus
                         required
