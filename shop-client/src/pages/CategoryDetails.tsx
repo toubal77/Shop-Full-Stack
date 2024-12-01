@@ -1,4 +1,4 @@
-import { Paper, Typography } from '@mui/material';
+import { Paper, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppContext, useToastContext } from '../context';
@@ -13,6 +13,9 @@ const CategoryDetails = () => {
     const { setToast } = useToastContext();
     const [category, setCategory] = useState<Category | null>(null);
 
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    
     const getCategory = (categoryId: string) => {
         CategoryService.getCategory(categoryId).then((res) => {
             setCategory(res.data);
@@ -55,7 +58,7 @@ const CategoryDetails = () => {
         >
             <ActionButtons handleDelete={handleDelete} handleEdit={handleEdit} />
 
-            <Typography variant="h3" sx={{ textAlign: 'center' }}>
+            <Typography variant={isMobile ? "h5":"h3"} sx={{ textAlign: 'center' }}>
                 {category.name}
             </Typography>
         </Paper>
