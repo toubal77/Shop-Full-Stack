@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context';
 import { FormattedProduct, Product } from '../types';
 import { formatterLocalizedProduct, priceFormatter } from '../utils';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 type Props = {
     product: Product;
@@ -19,11 +20,14 @@ const ProductCard = ({ product, displayShop = false }: Props) => {
         formatterLocalizedProduct(product, locale),
     );
 
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     useEffect(() => setFormattedProduct(formatterLocalizedProduct(product, locale)), [locale]);
 
     return (
         <Card
-            sx={{ minWidth: 275, height: displayShop ? 270 : 230, cursor: 'pointer' }}
+            sx={{ minWidth: isMobile ? 275: 175, height: displayShop ? 280 : 240, cursor: 'pointer' }}
             onClick={() => navigate(`/product/${formattedProduct.id}`)}
         >
             <CardContent>

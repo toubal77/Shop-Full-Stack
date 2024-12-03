@@ -68,21 +68,22 @@ const ShopDetails = () => {
             elevation={1}
             sx={{
                 position: 'relative',
-                padding: 4,
+                padding: 4,display: 'flex', flexDirection: 'column', alignItems: 'center',
+                width: '100%',
             }}
         >
             <ActionButtons handleDelete={handleDelete} handleEdit={handleEdit} />
 
-            <Typography variant="h3" sx={{ textAlign: 'center', marginBottom: 3 }}>
+            <Typography variant="h3" sx={{ textAlign: 'center', marginBottom: 3, fontSize: { xs: '1.5rem', sm: '2rem' } }}>
                 {shop.name}
             </Typography>
-            <Typography variant="h6">
+            <Typography variant="h6" sx={{ textAlign: 'center' }}>
                 Cette boutique comporte {shop.nbProducts} {pluralize('produit', shop.nbProducts)}
             </Typography>
-            <Typography sx={{ my: 1 }}>
+            <Typography sx={{ my: 1, textAlign: 'center' }}>
                 {shop.inVacations ? 'En congé actuellement' : "N'est pas en congé actuellement"}
             </Typography>
-            <Typography sx={{ my: 1 }} color="text.secondary">
+            <Typography sx={{ my: 1, color: 'text.secondary', textAlign: 'center' }}>
                 Boutique créée le : {moment(shop.createdAt).format('DD/MM/YYYY')}
             </Typography>
 
@@ -92,21 +93,22 @@ const ShopDetails = () => {
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    my: 4,
+                    my: 4, width: '100%',
                 }}
             >
-                <Typography variant="h4" sx={{ mb: 2 }}>
+                <Typography variant="h4" sx={{ mb: 2, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
                     Horaires d&apos;ouverture :
                 </Typography>
                 {shop.openingHours.map((openingHour) => (
                     <Box
                         key={openingHour.id}
                         sx={{
-                            width: 200,
+                            width: { xs: '100%', sm: '200px' },
                             display: 'flex',
                             flexDirection: 'row',
                             alignItems: 'center',
-                            justifyContent: 'space-between',
+                            justifyContent: 'space-between', mb: 2,
+                            textAlign: { xs: 'center', sm: 'left' },
                         }}
                     >
                         <Typography sx={{ mb: 1.5 }}>{DAY[openingHour.day]}</Typography>
@@ -117,7 +119,7 @@ const ShopDetails = () => {
                 ))}
             </Box>
 
-            <Typography variant="h4" sx={{ textAlign: 'center', mb: 2 }}>
+            <Typography variant="h4" sx={{ textAlign: 'center', mb: 2, fontSize: { xs: '1.5rem', sm: '1.75rem' } }}>
                 Les produits :
             </Typography>
             {id && <ShopProducts shopId={id} />}

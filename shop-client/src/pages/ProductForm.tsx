@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Button, Divider, FormControl, InputAdornment, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, FormControl, InputAdornment, Paper, TextField, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SelectPaginate } from '../components';
@@ -42,6 +41,10 @@ const ProductForm = () => {
             },
         ],
     });
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isTablette = useMediaQuery(theme.breakpoints.down('md'));
 
     const getProduct = (productId: string) => {
         setLoading(true);
@@ -142,13 +145,13 @@ const ProductForm = () => {
 
     return (
         <Paper elevation={1} sx={{ padding: 4 }}>
-            <Typography variant="h2" sx={{ marginBottom: 3, textAlign: 'center' }}>
+            <Typography variant={isMobile ? "h4" : isTablette ? "h3" : "h2"} sx={{ marginBottom: 3, textAlign: 'center' }}>
                 {isAddMode ? 'Ajouter un produit' : 'Modifier le produit'}
             </Typography>
 
-            <FormControl sx={{ display: 'block', ml: 'auto', mr: 'auto', width: '75%', mb: 3 }}>
+            <FormControl sx={{ display: 'block', ml: 'auto', mr: 'auto', width: isMobile ? '100%' : '75%', mb: 3 }}>
                 <Divider>Nom du produit</Divider>
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4, mt: 2, mb: 6 }}>
+                <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 4, mt: 2, mb: 6 }}>
                     <TextField
                         autoFocus
                         required
@@ -158,7 +161,7 @@ const ProductForm = () => {
                         fullWidth
                         error={!!errors.nameFr}
                         helperText={errors.nameFr}
-                        sx={{ width: '50%' }}
+                        sx={{ width: isMobile ? '100%' : '50%' }}
                     />
                     <TextField
                         autoFocus
@@ -168,12 +171,12 @@ const ProductForm = () => {
                         fullWidth
                         error={!!errors.nameEn}
                         helperText={errors.nameEn}
-                        sx={{ width: '50%' }}
+                        sx={{ width: isMobile ? '100%' : '50%' }}
                     />
                 </Box>
 
                 <Divider>Description</Divider>
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4, mt: 2, mb: 6 }}>
+                <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 4, mt: 2, mb: 6 }}>
                     <TextField
                         autoFocus
                         multiline
@@ -182,9 +185,8 @@ const ProductForm = () => {
                         value={getLocalizedProduct(product.localizedProducts, Locale.FR).description}
                         onChange={(e) => handleChange(Locale.FR, 'description', e.target.value)}
                         fullWidth
-                        sx={{ width: '50%' }}
+                        sx={{ width: isMobile ? '100%' : '50%' }}
                     />
-
                     <TextField
                         autoFocus
                         multiline
@@ -193,12 +195,12 @@ const ProductForm = () => {
                         value={getLocalizedProduct(product.localizedProducts, Locale.EN).description}
                         onChange={(e) => handleChange(Locale.EN, 'description', e.target.value)}
                         fullWidth
-                        sx={{ width: '50%' }}
+                        sx={{ width: isMobile ? '100%' : '50%' }}
                     />
                 </Box>
 
                 <Divider>Informations supplémentaires</Divider>
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4, mt: 2, mb: 3 }}>
+                <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 4, mt: 2, mb: 3 }}>
                     <TextField
                         autoFocus
                         required
@@ -212,10 +214,9 @@ const ProductForm = () => {
                         }}
                         error={!!errors.price}
                         helperText={errors.price}
-                        sx={{ width: '50%' }}
+                        sx={{ width: isMobile ? '100%' : '50%' }}
                     />
-
-                    <Box sx={{ width: '50%' }}>
+                    <Box sx={{ width: isMobile ? '100%' : '50%' }}>
                         <SelectPaginate
                             value={product.shop}
                             onChange={setShop}
@@ -226,7 +227,7 @@ const ProductForm = () => {
                     </Box>
                 </Box>
 
-                <Box sx={{ mt: 2 }}>
+                <Box sx={{ mb: 2 }}>
                     <SelectPaginate
                         isMulti
                         value={product.categories}
@@ -236,13 +237,13 @@ const ProductForm = () => {
                         defaultLabel="Aucune"
                     />
                 </Box>
-            </FormControl>
 
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Button variant="contained" onClick={handleSubmit}>
-                    Valider
-                </Button>
-            </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button onClick={handleSubmit} variant="contained" size="large" sx={{ width: '30%' }}>
+                        {isAddMode ? 'Créer' : 'Modifier'}
+                    </Button>
+                </Box>
+            </FormControl>
         </Paper>
     );
 };

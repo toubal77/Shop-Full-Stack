@@ -9,6 +9,8 @@ import {
     Select,
     SelectChangeEvent,
     Typography,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
@@ -28,6 +30,9 @@ const Home = () => {
 
     const [sort, setSort] = useState<string>('');
     const [filters, setFilters] = useState<string>('');
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const getShops = () => {
         setLoading(true);
@@ -61,18 +66,24 @@ const Home = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
-            <Typography variant="h2">Les boutiques</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            <Typography variant={isMobile ? 'h4' : 'h2'} textAlign="center">
+                Les boutiques
+            </Typography>
 
             <Box
                 sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
+                    width: '100%', display: 'flex', flexDirection: isMobile ? 'column' : 'row',
+                    justifyContent: isMobile ? 'center' : 'flex-end', alignItems: 'center', gap: 2,
                 }}
             >
-                <Fab variant="extended" color="primary" aria-label="add" onClick={() => navigate('/shop/create')}>
+                <Fab
+                    variant="extended" color="primary" aria-label="add"
+                    onClick={() => navigate('/shop/create')}
+                    sx={{
+                        width: isMobile ? '100%' : 'auto',
+                    }}
+                >
                     <AddIcon sx={{ mr: 1 }} />
                     Ajouter une boutique
                 </Fab>
@@ -81,10 +92,11 @@ const Home = () => {
             {/* Sort and filters */}
             <Box
                 sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'row',
+                    width: '100%', display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
                     justifyContent: 'space-between',
+                    alignItems: isMobile ? 'stretch' : 'center',
+                    gap: 2,
                 }}
             >
                 <FormControl sx={{ minWidth: 200 }}>
@@ -109,9 +121,9 @@ const Home = () => {
             </Box>
 
             {/* Shops */}
-            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
+            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3} sx={{ width: '100%' }}>
                 {shops?.map((shop) => (
-                    <Grid item key={shop.id} xs={4}>
+                    <Grid item key={shop.id} xs={12} sm={6} md={4}>
                         <ShopCard shop={shop} />
                     </Grid>
                 ))}
@@ -119,7 +131,18 @@ const Home = () => {
 
             {/* Pagination */}
             {shops?.length !== 0 ? (
-                <Pagination count={count} page={page} siblingCount={1} onChange={handleChangePagination} />
+                <Pagination
+                    count={count}
+                    page={page}
+                    siblingCount={1}
+                    onChange={handleChangePagination}
+                    sx={{
+                        marginTop: 3,
+                        '& .MuiPaginationItem-root': {
+                            fontSize: { xs: '0.8rem', sm: '1rem' },
+                        },
+                    }}
+                />
             ) : (
                 <Typography variant="h5" sx={{ mt: -1 }}>
                     Aucune boutique correspondante
