@@ -149,7 +149,7 @@ const ShopForm = () => {
                         fullWidth
                         error={!!errors?.name}
                         helperText={errors?.name}
-                        sx={{ marginBottom: 3 }}
+                        sx={{ my: 2, width: '85%', ml: 'auto', mr: 'auto' }}
                     />
                     <FormControlLabel
                         value="start"
