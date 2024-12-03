@@ -1,4 +1,4 @@
-import { Box, Fab, Grid, Pagination, Typography } from '@mui/material';
+import { Box, Fab, Grid, Pagination, Typography, useMediaQuery, useTheme } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,9 @@ const Products = () => {
     const [count, setCount] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
     const [pageSelected, setPageSelected] = useState<number>(0);
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const getProducts = () => {
         setLoading(true);
@@ -36,7 +39,7 @@ const Products = () => {
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: { xs: 2, sm: 3, md: 4 } }}>
-            <Typography variant="h2" sx={{ fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' }, textAlign: 'center' }}>
+            <Typography variant={isMobile ? 'h4' : 'h2'} textAlign="center">
                 Les produits
             </Typography>
 
