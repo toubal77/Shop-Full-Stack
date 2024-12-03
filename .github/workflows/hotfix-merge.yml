@@ -1,0 +1,33 @@
+name: Sync Hotfix with Develop
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  sync-with-develop:
+    name: Sync master with develop
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Setup Git User
+      run: |
+        git config user.name "Zine-Eddine TOUBAL"
+        git config user.email "toubalzineddine77@gmail.com"
+
+    - name: Fetch All Branches
+      run: git fetch --all
+
+    - name: Merge master into develop
+      run: |
+        git checkout develop
+        git merge master --no-ff -m "Synchronize hotfix from master to develop [skip ci]"
+        git push origin develop
+
+    - name: Notify Success
+      if: success()
+      run: echo "Hotfix successfully merged into develop"
