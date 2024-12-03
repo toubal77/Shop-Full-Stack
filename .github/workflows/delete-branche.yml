@@ -1,0 +1,33 @@
+name: Delete Feature Branches
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - develop
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Check if PR is merged and delete feature branch
+      if: github.event.pull_request.merged == true
+      run: |
+        # recuperer le nom de la branche source du PR
+        SOURCE_BRANCH="${{ github.event.pull_request.head.ref }}"
+
+        # Verifier si la branche source commence par "feature/"
+        if [[ "$SOURCE_BRANCH" == feature/* ]]; then
+          echo "Branch starts with 'feature/', deleting branch..."
+          
+          # utilisation de l'API GitHub pour supprime la branche source
+          # token genere automatiquement 
+          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/git/refs/heads/${SOURCE_BRANCH}"
+        else
+          echo "Branch does not start with 'feature/', skipping deletion."
+        fi
