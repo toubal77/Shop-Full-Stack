@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -20,13 +21,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "products")
+@Table(
+    name = "products",
+    indexes = @Index(name = "idx_shop_id", columnList = "shop_id")
+)
 public class Product {
     @ManyToMany
     @JoinTable(
-            name = "products_categories",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
+        name = "products_categories",
+        joinColumns = @JoinColumn(name = "product_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id"),
+        indexes = {
+            @Index(name = "idx_product_id", columnList = "product_id"),
+            @Index(name = "idx_category_id", columnList = "category_id")
+        }
+    )
     private List<Category> categories = new ArrayList<Category>();
 
     @Id

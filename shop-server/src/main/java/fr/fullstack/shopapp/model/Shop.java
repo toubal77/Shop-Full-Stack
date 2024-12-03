@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.Valid;
+import javax.persistence.Index;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -25,8 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "shops")
-@Indexed(index = "idx_shops")
+@Table(
+    name = "shops",
+    indexes = {
+        @Index(name = "idx_shop_name", columnList = "name"),
+        @Index(name = "idx_shop_in_vacations", columnList = "inVacations"),
+        @Index(name = "idx_shop_created_at", columnList = "created_at")
+    }
+)
 public class Shop {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -15,7 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "categories")
+@Table(
+    name = "categories",
+    indexes = @Index(name = "idx_category_name", columnList = "name")
+)
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,7 +27,7 @@ public class Category {
 
     @Size(min = 1, max = 255, message = "Name must be between 1 and 255 characters")
     @NotNull(message = "Name may not be null")
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true) // unique est ajouter pour eviter les doublons
     private String name;
 
     @ManyToMany(mappedBy = "categories")
