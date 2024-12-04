@@ -7,6 +7,7 @@ import { Category } from '../types';
 import { ActionButtons } from '../components';
 import { useAppDispatch } from '../context/hooks';
 import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
 
 const CategoryDetails = () => {
     const { id } = useParams();
@@ -30,19 +31,15 @@ const CategoryDetails = () => {
     }, [id]);
 
     const handleDelete = () => {
-        setLoading(true);
-        id &&
-            CategoryService.deleteCategory(id)
-                .then(() => {
-                    navigate('/category');
-                    dispatch(setToast({ severity: 'success', message: 'La catégorie a bien été supprimée' }));
-                })
-                .catch(() => {
-                    dispatch(setToast({ severity: 'error', message: 'Une erreur est survenue lors de la suppression' }));
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+        if (!id) return; 
+        handleAction(
+            CategoryService.deleteCategory(id),
+            'La catégorie a bien été supprimée',
+            '/',
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
 
     const handleEdit = () => {

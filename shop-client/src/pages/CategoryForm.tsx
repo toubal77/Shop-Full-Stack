@@ -6,6 +6,7 @@ import { CategoryService } from '../services';
 import { MinimalCategory, ObjectPropertyString } from '../types';
 import { useAppDispatch } from '../context/hooks';
 import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
 
 const schema = (category: MinimalCategory) => ({
     name: category.name ? '' : 'Ce champ est requis',
@@ -27,21 +28,6 @@ const CategoryForm = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const isTablette = useMediaQuery(theme.breakpoints.down('md'));
 
-    const handleCategoryAction = (action: Promise<any>, successMessage: string, redirectPath: string) => {
-        setLoading(true);
-        action
-            .then(() => {
-                navigate(redirectPath);
-                dispatch(setToast({ severity: 'success', message: successMessage }));
-            })
-            .catch(() => {
-                dispatch(setToast({ severity: 'error', message: 'Une erreur est survenue lors de l\'opération' }));
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    };
-
     const getCategory = (categoryId: string) => {
         setLoading(true);
         CategoryService.getCategory(categoryId)
@@ -59,18 +45,24 @@ const CategoryForm = () => {
     }, [isAddMode]);
 
     const createCategory = () => {
-        handleCategoryAction(
+        handleAction(
             CategoryService.createCategory(category),
             'La catégorie a bien été créée',
-            `/category`
+            `/category`,
+            dispatch,
+            navigate,
+            setLoading
         );
     };
 
     const editCategory = () => {
-        handleCategoryAction(
+        handleAction(
             CategoryService.editCategory(category),
             'La catégorie a bien été modifiée',
-            `/category/${id}`
+            `/category/${id}`,
+            dispatch,
+            navigate,
+            setLoading
         );
     };
 

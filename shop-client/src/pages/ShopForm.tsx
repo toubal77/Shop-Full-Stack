@@ -27,6 +27,7 @@ import { MinimalShop, ObjectPropertyString } from '../types';
 import { useAppContext, useToastContext } from '../context';
 import { useAppDispatch } from '../context/hooks';
 import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
 const schema = (shop: MinimalShop) => ({
     name: shop.name ? '' : 'Ce champ est requis',
 });
@@ -61,34 +62,25 @@ const ShopForm = () => {
             .finally(() => setLoading(false));
     };
 
-    const handleShopAction = (action: Promise<any>, successMessage: string, redirectPath: string) => {
-        setLoading(true);
-        action
-            .then(() => {
-                navigate(redirectPath);
-                dispatch(setToast({ severity: 'success', message: successMessage }));
-            })
-            .catch(() => {
-                dispatch(setToast({ severity: 'error', message: 'Une erreur est survenue lors de l\'opération' }));
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    };
-
     const createShop = () => {
-        handleShopAction(
+        handleAction(
             ShopService.createShop(shop),
             'La boutique a bien été créée',
-            `/`
+            '/',
+            dispatch,
+            navigate,
+            setLoading
         );
     };
 
     const editShop = () => {
-        handleShopAction(
+        handleAction(
             ShopService.createShop(shop),
             'La boutique a bien été modifié',
-           `/shop/${id}`
+            `/shop/${id}`,
+            dispatch,
+            navigate,
+            setLoading
         );
     };
 

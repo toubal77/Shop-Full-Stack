@@ -8,6 +8,7 @@ import { FormattedProduct, Product } from '../types';
 import { formatterLocalizedProduct, priceFormatter } from '../utils';
 import { useAppDispatch } from '../context/hooks';
 import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -33,19 +34,15 @@ const ProductDetails = () => {
     }, [locale, product]);
 
     const handleDelete = () => {
-        setLoading(true);
-        id &&
-            ProductService.deleteProduct(id)
-                .then(() => {
-                    navigate('/product');
-                    dispatch(setToast({ severity: 'success', message: 'Le produit a bien été supprimé' }));
-                })
-                .catch(() => {
-                    dispatch(setToast({ severity: 'error', message: 'Une erreur est survenue lors de la suppression' }));
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+        if (!id) return; 
+        handleAction(
+            ProductService.deleteProduct(id),
+            'Le produit a bien été supprimé',
+            '/',
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
 
     const handleEdit = () => {

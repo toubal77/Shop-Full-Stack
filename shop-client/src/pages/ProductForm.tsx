@@ -9,6 +9,7 @@ import Locale from '../types/locale';
 import { formatterProductForm, getLocalizedProduct } from '../utils';
 import { useAppDispatch } from '../context/hooks';
 import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
 const schema = (product: MinimalProduct) => ({
     nameFr: product.localizedProducts[0].name ? '' : 'Ce champ est requis',
     nameEn:
@@ -68,35 +69,26 @@ const ProductForm = () => {
     useEffect(() => {
         !isAddMode && id && getProduct(id);
     }, [isAddMode]);
-
-    const handleProductAction = (action: Promise<any>, successMessage: string, redirectPath: string) => {
-        setLoading(true);
-        action
-            .then(() => {
-                navigate(redirectPath);
-                dispatch(setToast({ severity: 'success', message: successMessage }));
-            })
-            .catch(() => {
-                dispatch(setToast({ severity: 'error', message: 'Une erreur est survenue lors de l\'opération' }));
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    };
     
     const createProduct = (productToCreate: MinimalProduct) => {
-        handleProductAction(
+        handleAction(
             ProductService.createProduct(productToCreate),
             'Le produit a bien été créé',
-            '/product'
+            '/product',
+            dispatch,
+            navigate,
+            setLoading
         );
     };
     
     const editProduct = (productToEdit: MinimalProduct) => {
-        handleProductAction(
+        handleAction(
             ProductService.editProduct(productToEdit),
             'Le produit a bien été modifié',
-            `/product/${id}`
+            `/product/${id}`,
+            dispatch,
+            navigate,
+            setLoading
         );
     };
       

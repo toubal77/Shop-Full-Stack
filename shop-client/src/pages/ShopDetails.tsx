@@ -9,6 +9,7 @@ import { useAppContext, useToastContext } from '../context';
 import { pluralize } from '../utils';
 import { useAppDispatch } from '../context/hooks';
 import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
 
 const DAY: Record<number, string> = {
     1: 'Lundi',
@@ -45,19 +46,15 @@ const ShopDetails = () => {
     };
 
     const handleDelete = () => {
-        setLoading(true);
-        id &&
-            ShopService.deleteShop(id)
-                .then(() => {
-                    navigate('/');
-                    dispatch(setToast({ severity: 'success', message: 'La boutique a bien été supprimée' }));
-                })
-                .catch(() => {
-                    dispatch(setToast({ severity: 'error', message: 'Une erreur est survenue lors de la suppression' }));
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+        if (!id) return; 
+        handleAction(
+            ShopService.deleteShop(id), 
+            'La boutique a bien été supprimée',
+            '/',
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
 
     const handleEdit = () => {
