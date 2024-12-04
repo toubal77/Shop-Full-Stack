@@ -25,8 +25,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Size(min = 1, max = 255, message = "Name must be between 1 and 255 characters")
-    @NotNull(message = "Name may not be null")
+    @Size(min = 1, max = 255, message = "Le nom doit être compris entre 1 et 255 caractères")
+    @NotNull(message = "Le nom peut ne pas être nul")
     @Column(nullable = false, unique = true) // unique est ajouter pour eviter les doublons
     private String name;
 

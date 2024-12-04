@@ -43,12 +43,12 @@ public class Product {
     private long id;
 
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @Size(min = 1, message = "At least one name and one description must be provided")
+    @Size(min = 1, message = "Au moins un nom et une description doivent être fournis")
     private List<@Valid LocalizedProduct> localizedProduct = new ArrayList<LocalizedProduct>();
 
     @Column(nullable = false)
-    @PositiveOrZero(message = "Price must be positive")
-    @NotNull(message = "Price may not be null")
+    @PositiveOrZero(message = "Le prix doit être positif")
+    @NotNull(message = "Le prix peut ne pas être nul")
     private float price;
 
     @ManyToOne

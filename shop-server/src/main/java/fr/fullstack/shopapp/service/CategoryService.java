@@ -78,7 +78,7 @@ public class CategoryService {
     private Category getCategory(Long id) throws Exception {
         Optional<Category> category = categoryRepository.findById(id);
         if (!category.isPresent()) {
-            throw new Exception("Category with id " + id + " not found");
+            throw new Exception("Catégorie avec id " + id + " non trouvé");
         }
         return category.get();
     }

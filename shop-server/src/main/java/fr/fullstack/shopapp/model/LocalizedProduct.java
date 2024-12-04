@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @Table(name = "LocalizedProduct")
 public class LocalizedProduct {
     @Column
-    @Size(min = 1, max = 255, message = "Description must be between 1 and 255 characters")
+    @Size(min = 1, max = 255, message = "La description doit comporter entre 1 et 255 caractères")
     private String description;
 
     @Id
@@ -23,13 +23,13 @@ public class LocalizedProduct {
     private long id;
 
     @Column(nullable = false)
-    @StringEnumeration(enumClass = Locale.class, message = "Locale must be FR or EN")
-    @NotNull(message = "Locale may not be null")
+    @StringEnumeration(enumClass = Locale.class, message = "La langue doit être FR (Français) ou EN (English)")
+    @NotNull(message = "La locale peut ne pas être nulle")
     private String locale;
 
     @Column(nullable = false)
-    @Size(min = 1, max = 255, message = "Name must be between 1 and 255 characters")
-    @NotNull(message = "Name may not be null")
+    @Size(min = 1, max = 255, message = "Le nom doit être compris entre 1 et 255 caractères")
+    @NotNull(message = "Le nom peut ne pas être nul")
     private String name;
 
     public String getDescription() {

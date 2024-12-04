@@ -45,13 +45,13 @@ public class Shop {
     private long id;
 
     @Column(nullable = false)
-    @NotNull(message = "InVacations may not be null")
+    @NotNull(message = "Veuillez indiquer si vous êtes en congé ou non")
     @GenericField
     private boolean inVacations;
 
     @Column(nullable = false)
-    @Size(min = 1, max = 255, message = "Name must be between 1 and 255 characters")
-    @NotNull(message = "Name may not be null")
+    @Size(min = 1, max = 255, message = "Le nom doit être compris entre 1 et 255 caractères")
+    @NotNull(message = "Le nom peut ne pas être nul")
     @FullTextField
     private String name;
 

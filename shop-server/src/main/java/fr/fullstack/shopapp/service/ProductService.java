@@ -85,14 +85,14 @@ public class ProductService {
 
         // A name in french must be at least provided
         if (!localizedProductFr.isPresent()) {
-            throw new Exception("A name in french must be at least provided");
+            throw new Exception("Un nom en français doit être fourni au moins");
         }
     }
 
     private Product getProduct(Long id) throws Exception {
         Optional<Product> product = productRepository.findById(id);
         if (!product.isPresent()) {
-            throw new Exception("Product with id " + id + " not found");
+            throw new Exception("Produit avec id " + id + " non trouvé");
         }
         return product.get();
     }
