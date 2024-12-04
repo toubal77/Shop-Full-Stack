@@ -7,7 +7,8 @@ import { CategoryService, ProductService, ShopService } from '../services';
 import { MinimalProduct } from '../types';
 import Locale from '../types/locale';
 import { formatterProductForm, getLocalizedProduct } from '../utils';
-
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
 const schema = (product: MinimalProduct) => ({
     nameFr: product.localizedProducts[0].name ? '' : 'Ce champ est requis',
     nameEn:
@@ -21,8 +22,9 @@ const ProductForm = () => {
     const { id } = useParams();
     const isAddMode = !id;
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    const { setToast } = useToastContext();
+    //const { setToast } = useToastContext();
     const [errors, setErrors] = useState<any>({});
     const [product, setProduct] = useState<MinimalProduct>({
         price: 0,
@@ -67,35 +69,37 @@ const ProductForm = () => {
         !isAddMode && id && getProduct(id);
     }, [isAddMode]);
 
+    const handleProductAction = (action: Promise<any>, successMessage: string, redirectPath: string) => {
+        setLoading(true);
+        action
+            .then(() => {
+                navigate(redirectPath);
+                dispatch(setToast({ severity: 'success', message: successMessage }));
+            })
+            .catch(() => {
+                dispatch(setToast({ severity: 'error', message: 'Une erreur est survenue lors de l\'opération' }));
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
+    
     const createProduct = (productToCreate: MinimalProduct) => {
-        setLoading(true);
-        ProductService.createProduct(productToCreate)
-            .then(() => {
-                navigate('/product');
-                setToast({ severity: 'success', message: 'Le produit a bien été créé' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la création' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleProductAction(
+            ProductService.createProduct(productToCreate),
+            'Le produit a bien été créé',
+            '/product'
+        );
     };
-
+    
     const editProduct = (productToEdit: MinimalProduct) => {
-        setLoading(true);
-        ProductService.editProduct(productToEdit)
-            .then(() => {
-                navigate(`/product/${id}`);
-                setToast({ severity: 'success', message: 'Le produit a bien été modifié' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la modification' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleProductAction(
+            ProductService.editProduct(productToEdit),
+            'Le produit a bien été modifié',
+            `/product/${id}`
+        );
     };
+      
 
     const validate = () => {
         setErrors(schema(product));
