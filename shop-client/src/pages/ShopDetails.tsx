@@ -7,6 +7,8 @@ import { ShopService } from '../services';
 import { Shop } from '../types';
 import { useAppContext, useToastContext } from '../context';
 import { pluralize } from '../utils';
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
 
 const DAY: Record<number, string> = {
     1: 'Lundi',
@@ -21,8 +23,9 @@ const DAY: Record<number, string> = {
 const ShopDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    const { setToast } = useToastContext();
+    //const { setToast } = useToastContext();
     const [shop, setShop] = useState<Shop | null>(null);
 
     const getShop = (shopId: string) => {
@@ -47,10 +50,10 @@ const ShopDetails = () => {
             ShopService.deleteShop(id)
                 .then(() => {
                     navigate('/');
-                    setToast({ severity: 'success', message: 'La boutique a bien été supprimée' });
+                    dispatch(setToast({ severity: 'success', message: 'La boutique a bien été supprimée' }));
                 })
                 .catch(() => {
-                    setToast({ severity: 'error', message: 'Une erreur est survenue lors de la suppresion' });
+                    dispatch(setToast({ severity: 'error', message: 'Une erreur est survenue lors de la suppression' }));
                 })
                 .finally(() => {
                     setLoading(false);

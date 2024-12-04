@@ -5,12 +5,15 @@ import { useAppContext, useToastContext } from '../context';
 import { CategoryService } from '../services';
 import { Category } from '../types';
 import { ActionButtons } from '../components';
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
 
 const CategoryDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    const { setToast } = useToastContext();
+    //const { setToast } = useToastContext();
     const [category, setCategory] = useState<Category | null>(null);
 
     const theme = useTheme();
@@ -32,10 +35,10 @@ const CategoryDetails = () => {
             CategoryService.deleteCategory(id)
                 .then(() => {
                     navigate('/category');
-                    setToast({ severity: 'success', message: 'La catégorie a bien été supprimée' });
+                    dispatch(setToast({ severity: 'success', message: 'La catégorie a bien été supprimée' }));
                 })
                 .catch(() => {
-                    setToast({ severity: 'error', message: 'Une erreur est survenue lors de la suppresion' });
+                    dispatch(setToast({ severity: 'error', message: 'Une erreur est survenue lors de la suppression' }));
                 })
                 .finally(() => {
                     setLoading(false);

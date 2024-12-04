@@ -4,6 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppContext, useToastContext } from '../context';
 import { CategoryService } from '../services';
 import { MinimalCategory, ObjectPropertyString } from '../types';
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
 
 const schema = (category: MinimalCategory) => ({
     name: category.name ? '' : 'Ce champ est requis',
@@ -13,8 +15,9 @@ const CategoryForm = () => {
     const { id } = useParams();
     const isAddMode = !id;
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    const { setToast } = useToastContext();
+    //const { setToast } = useToastContext();
     const [errors, setErrors] = useState<ObjectPropertyString<MinimalCategory>>();
     const [category, setCategory] = useState<MinimalCategory>({
         name: '',
@@ -23,6 +26,21 @@ const CategoryForm = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const isTablette = useMediaQuery(theme.breakpoints.down('md'));
+
+    const handleCategoryAction = (action: Promise<any>, successMessage: string, redirectPath: string) => {
+        setLoading(true);
+        action
+            .then(() => {
+                navigate(redirectPath);
+                dispatch(setToast({ severity: 'success', message: successMessage }));
+            })
+            .catch(() => {
+                dispatch(setToast({ severity: 'error', message: 'Une erreur est survenue lors de l\'opération' }));
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
 
     const getCategory = (categoryId: string) => {
         setLoading(true);
@@ -41,33 +59,19 @@ const CategoryForm = () => {
     }, [isAddMode]);
 
     const createCategory = () => {
-        setLoading(true);
-        CategoryService.createCategory(category)
-            .then(() => {
-                navigate('/category');
-                setToast({ severity: 'success', message: 'La catégorie a bien été créée' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la création' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleCategoryAction(
+            CategoryService.createCategory(category),
+            'La catégorie a bien été créée',
+            `/category`
+        );
     };
 
     const editCategory = () => {
-        setLoading(true);
-        CategoryService.editCategory(category)
-            .then(() => {
-                navigate(`/category/${id}`);
-                setToast({ severity: 'success', message: 'La catégorie a bien été modifiée' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la modification' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleCategoryAction(
+            CategoryService.editCategory(category),
+            'La catégorie a bien été modifiée',
+            `/category/${id}`
+        );
     };
 
     const validate = () => {

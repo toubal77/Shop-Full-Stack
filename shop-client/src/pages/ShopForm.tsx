@@ -25,7 +25,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Dayjs } from 'dayjs';
 import { MinimalShop, ObjectPropertyString } from '../types';
 import { useAppContext, useToastContext } from '../context';
-
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
 const schema = (shop: MinimalShop) => ({
     name: shop.name ? '' : 'Ce champ est requis',
 });
@@ -34,8 +35,9 @@ const ShopForm = () => {
     const { id } = useParams();
     const isAddMode = !id;
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    const { setToast } = useToastContext();
+    //const { setToast } = useToastContext();
     const [errors, setErrors] = useState<ObjectPropertyString<MinimalShop>>();
     const [shop, setShop] = useState<MinimalShop>({
         name: '',
@@ -59,34 +61,35 @@ const ShopForm = () => {
             .finally(() => setLoading(false));
     };
 
-    const createShop = () => {
+    const handleShopAction = (action: Promise<any>, successMessage: string, redirectPath: string) => {
         setLoading(true);
-        ShopService.createShop(shop)
+        action
             .then(() => {
-                navigate('/');
-                setToast({ severity: 'success', message: 'La boutique a bien été créée' });
+                navigate(redirectPath);
+                dispatch(setToast({ severity: 'success', message: successMessage }));
             })
             .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la création' });
+                dispatch(setToast({ severity: 'error', message: 'Une erreur est survenue lors de l\'opération' }));
             })
             .finally(() => {
                 setLoading(false);
             });
     };
 
+    const createShop = () => {
+        handleShopAction(
+            ShopService.createShop(shop),
+            'La boutique a bien été créée',
+            `/`
+        );
+    };
+
     const editShop = () => {
-        setLoading(true);
-        ShopService.editShop(shop)
-            .then(() => {
-                navigate(`/shop/${id}`);
-                setToast({ severity: 'success', message: 'La boutique a bien été modifiée' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la modification' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleShopAction(
+            ShopService.createShop(shop),
+            'La boutique a bien été modifié',
+           `/shop/${id}`
+        );
     };
 
     useEffect(() => {
