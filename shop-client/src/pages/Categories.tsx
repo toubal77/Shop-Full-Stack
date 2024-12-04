@@ -59,11 +59,19 @@ const Categories = () => {
 
             {/* Categories */}
             <Grid container alignItems="center" rowSpacing={3} columnSpacing={3} sx={{ width: '100%' }}>
-                {categories?.map((category) => (
-                    <Grid item key={category.id} xs={12} sm={6} md={4}>
-                        <CategoryCard category={category} />
+                {categories && categories.length > 0 ? (
+                    categories?.map((category) => (
+                        <Grid item key={category.id} xs={12} sm={6} md={4}>
+                            <CategoryCard category={category} />
+                        </Grid>
+                    ))
+                ) : (
+                    <Grid item xs={12} sx={{ textAlign: 'center', marginTop: 3 }}>
+                        <Typography variant="h6" color="textSecondary">
+                            Aucune catégorie trouvée
+                        </Typography>
                     </Grid>
-                ))}
+                )}
             </Grid>
 
             {/* Pagination */}

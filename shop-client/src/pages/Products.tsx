@@ -59,11 +59,19 @@ const Products = () => {
 
             {/* Products */}
             <Grid container alignItems="center" rowSpacing={3} columnSpacing={3} sx={{ width: '100%' }}>
-                {products?.map((product) => (
-                    <Grid item key={product.id} xs={12} sm={6} md={4}>
-                        <ProductCard product={product} displayShop={true} />
+                {products && products.length > 0 ? (
+                    products?.map((product) => (
+                        <Grid item key={product.id} xs={12} sm={6} md={4}>
+                            <ProductCard product={product} displayShop={true} />
+                        </Grid>
+                    ))
+                ) : (
+                    <Grid item xs={12} sx={{ textAlign: 'center', marginTop: 3 }}>
+                        <Typography variant="h6" color="textSecondary">
+                            Aucun Produit trouvée
+                        </Typography>
                     </Grid>
-                ))}
+                )}
             </Grid>
 
             {/* Pagination */}

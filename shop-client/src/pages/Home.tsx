@@ -122,11 +122,19 @@ const Home = () => {
 
             {/* Shops */}
             <Grid container alignItems="center" rowSpacing={3} columnSpacing={3} sx={{ width: '100%' }}>
-                {shops?.map((shop) => (
-                    <Grid item key={shop.id} xs={12} sm={6} md={4}>
-                        <ShopCard shop={shop} />
+                {shops && shops.length > 0 ? (
+                    shops.map((shop) => (
+                        <Grid item key={shop.id} xs={12} sm={6} md={4}>
+                            <ShopCard shop={shop} />
+                        </Grid>
+                    ))
+                ) : (
+                    <Grid item xs={12} sx={{ textAlign: 'center', marginTop: 3 }}>
+                        <Typography variant="h6" color="textSecondary">
+                            Aucune boutique trouvée
+                        </Typography>
                     </Grid>
-                ))}
+                )}
             </Grid>
 
             {/* Pagination */}
