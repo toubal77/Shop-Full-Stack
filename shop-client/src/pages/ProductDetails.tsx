@@ -6,8 +6,10 @@ import { useAppContext, useToastContext } from '../context';
 import { ProductService } from '../services';
 import { FormattedProduct, Product } from '../types';
 import { formatterLocalizedProduct, priceFormatter } from '../utils';
+import { useTranslation } from 'react-i18next';
 
 const ProductDetails = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const { setLoading, locale } = useAppContext();
@@ -73,27 +75,27 @@ const ProductDetails = () => {
                 {formattedProduct.name}
             </Typography>
             <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.2rem' } }}>
-                Prix : {priceFormatter(formattedProduct.price)}
+                {t('product_details.details.prix')} : {priceFormatter(formattedProduct.price)}
             </Typography>
             {formattedProduct.description && (
                 <Typography sx={{ mt: 1.5, fontSize: { xs: '0.9rem', sm: '1rem' } }} color="text.secondary">
-                    Description : {formattedProduct.description}
+                    {t('product_details.details.description')} : {formattedProduct.description}
                 </Typography>
             )}
             <Typography sx={{ mt: 1.5, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
-                Boutique :{' '}
+                {t('product_details.details.boutique')} :{' '}
                 {formattedProduct.shop?.name ? (
                     <Link to={`/shop/${formattedProduct.shop?.id}`} style={{ color: '#607d8b' }}>
                         {formattedProduct.shop?.name}
                     </Link>
                 ) : (
-                    "N'appartient à aucune boutique"
+                    t('product_details.details.boutique_empty')
                 )}
             </Typography>
             <Typography sx={{ mt: 1.5, fontStyle: 'italic', fontSize: { xs: '0.9rem', sm: '1rem' } }}>
-                Catégories : {''}
+            {t('product_details.details.categorie')} : {''}
                 {formattedProduct.categories.length === 0
-                    ? 'Aucune'
+                    ? t('product_details.details.empty')
                     : formattedProduct.categories.map((cat, index) => (
                           <Fragment key={cat.id}>
                               <Link to={`/category/${cat.id}`} style={{ color: '#607d8b' }}>

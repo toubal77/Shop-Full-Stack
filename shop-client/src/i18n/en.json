@@ -1,0 +1,111 @@
+{
+  "header": {
+    "title": "Shop Management",
+    "boutiques": "Shops",
+    "produits": "Products",
+    "catégories": "Categories"
+  },
+  "home": {
+    "title": "Shops",
+    "LBL_ADD_SHOP": "Add a shop",
+    "filters": {
+      "trier_par": "Sort by",
+      "default_value": "None",
+      "name": "Name",
+      "createdAt": "Creation Date",
+      "nbProducts": "Number of products"
+    },
+    "list_vide": "No matching shops"
+  },
+  "products": {
+    "title": "Products",
+    "LBL_ADD_PRODUCT": "Add a product",
+    "list_vide": "No matching products",
+    "form": {
+      "ADD_PRODUCT": "Add a product",
+      "EDIT_PRODUCT": "Edit product",
+      "nom_product": "Product name",
+      "description": "Description",
+      "info_supplementaire": "Additional information",
+      "btn_create": "Create",
+      "btn_edit": "Edit",
+      "champ_requis": "This field is required",
+      "champ_requis_description": "A description is provided in English, so the name is required",
+      "champ_requis_price": "Price cannot be a negative number"
+    },
+    "list_vide": "No matching products"
+  },
+  "categories": {
+    "title": "Categories",
+    "LBL_ADD_CATEGORIE": "Add a category",
+    "list_vide": "No matching categories",
+    "form": {
+      "ADD_CATEGORIE": "Add a category",
+      "EDIT_CATEGORIE": "Edit category",
+      "info_categorie": "Category information",
+      "BTN_FORM": "Submit",
+      "champ_requis": "This field is required"
+    }
+  },
+  "shop": {
+    "form": {
+      "LBL_ADD_SHOP": "Add a shop",
+      "LBL_EDIT_SHOP": "Edit shop",
+      "info_shop": "Shop information",
+      "heures_ouvertures": "Shop opening hours",
+      "ADD_SHOP": "Add",
+      "EDIT_SHOP": "Edit",
+      "champ_requis": "This field is required"
+    }
+  },
+  "shop_details": {
+    "details": {
+      "nbrProducts": "This shop has",
+      "inVacations": "Currently on vacation",
+      "notVacations": "Not on vacation currently",
+      "createdAt": "Shop created on:",
+      "heure_ouverture": "Opening hours:",
+      "products": "Products:"
+    }
+  },
+  "product_details": {
+    "details": {
+      "prix": "Price",
+      "description": "Description",
+      "boutique": "Shop",
+      "boutique_empty": "Does not belong to any shop",
+      "categorie": "Categories",
+      "empty": "None"
+    }
+  },
+  "openingDays": {
+    "1": "Monday",
+    "2": "Tuesday",
+    "3": "Wednesday",
+    "4": "Thursday",
+    "5": "Friday",
+    "6": "Saturday",
+    "7": "Sunday"
+  },
+  "filters": {
+    "LBL_BTN": "Filter",
+    "title": "Filter shops",
+    "vacations": "Vacation",
+    "empty": "None",
+    "inVacations": "On vacation",
+    "notVacations": "Not on vacation",
+    "LBL_BTN_DELETE": "Clear",
+    "LBL_BTN_CANCEL": "Cancel",
+    "LBL_BTN_VALID": "Confirm"
+  },
+  "productCard": {
+    "price": "Price:",
+    "shop": "Shop:",
+    "category": "Categories:",
+    "empty": "None"
+  },
+  "shopCard": {
+    "createdAt": "Created on:",
+    "vacations": "On vacation:"
+  }
+}

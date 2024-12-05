@@ -4,12 +4,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppContext, useToastContext } from '../context';
 import { CategoryService } from '../services';
 import { MinimalCategory, ObjectPropertyString } from '../types';
+import { useTranslation } from 'react-i18next';
 
-const schema = (category: MinimalCategory) => ({
-    name: category.name ? '' : 'Ce champ est requis',
-});
+const schema = (category: MinimalCategory, t: any) => ({
+    name: category.name ? "" : t("categories.form.champ_requis"),
+  });
 
 const CategoryForm = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const isAddMode = !id;
     const navigate = useNavigate();
@@ -71,8 +73,9 @@ const CategoryForm = () => {
     };
 
     const validate = () => {
-        setErrors(schema(category));
-        return Object.values(schema(category)).every((o) => o == '');
+        const validationErrors = schema(category, t);
+        setErrors(validationErrors);
+        return Object.values(validationErrors).every((o) => o === "");
     };
 
     const handleSubmit = () => {
@@ -87,7 +90,7 @@ const CategoryForm = () => {
     return (
         <Paper elevation={1} sx={{ padding: 4 }}>
             <Typography variant={isMobile ? "h4": isTablette ? "h3": "h2"} sx={{ marginBottom: 3, textAlign: 'center' }}>
-                {isAddMode ? 'Ajouter une catégorie' : 'Modifier la catégorie'}
+                {isAddMode ? t('categories.form.ADD_CATEGORIE') : t('categories.form.EDIT_CATEGORIE')}
             </Typography>
 
             <FormControl
@@ -100,7 +103,7 @@ const CategoryForm = () => {
                     mb: 2,
                 }}
             >
-                <Divider>Informations de la catégorie</Divider>
+                <Divider>{t('categories.form.info_categorie')}</Divider>
                 <TextField
                     autoFocus
                     required
@@ -115,7 +118,7 @@ const CategoryForm = () => {
 
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Button variant="contained" onClick={handleSubmit}>
-                    Valider
+                    {t('categories.form.BTN_FORM')}
                 </Button>
             </Box>
         </Paper>

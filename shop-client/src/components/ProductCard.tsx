@@ -7,6 +7,7 @@ import { useAppContext } from '../context';
 import { FormattedProduct, Product } from '../types';
 import { formatterLocalizedProduct, priceFormatter } from '../utils';
 import { useMediaQuery, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
     product: Product;
@@ -14,6 +15,7 @@ type Props = {
 };
 
 const ProductCard = ({ product, displayShop = false }: Props) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { locale } = useAppContext();
     const [formattedProduct, setFormattedProduct] = useState<FormattedProduct>(
@@ -34,19 +36,19 @@ const ProductCard = ({ product, displayShop = false }: Props) => {
                 <Typography variant="h4" color="text.primary" gutterBottom>
                     {formattedProduct.name}
                 </Typography>
-                <Typography variant="h6">Prix : {priceFormatter(formattedProduct.price)}</Typography>
+                <Typography variant="h6">{t('productCard.price')} {priceFormatter(formattedProduct.price)}</Typography>
                 {formattedProduct.description && (
                     <Typography sx={{ mt: 1.5, maxHeight: 50, overflow: 'hidden' }} color="text.secondary">
                         {formattedProduct.description}
                     </Typography>
                 )}
                 {displayShop && (
-                    <Typography sx={{ mt: 1.5 }}>Boutique : {formattedProduct.shop?.name ?? 'Aucune'}</Typography>
+                    <Typography sx={{ mt: 1.5 }}>{t('productCard.shop')} {formattedProduct.shop?.name ?? 'Aucune'}</Typography>
                 )}
                 <Typography sx={{ mt: 1.5, fontStyle: 'italic' }}>
-                    Catégories : {''}
+                    {t('productCard.category')} {''}
                     {formattedProduct.categories.length === 0
-                        ? 'Aucune'
+                        ? t('productCard.empty')
                         : formattedProduct.categories.map((cat, index) => (
                               <span key={cat.id}>
                                   {cat.name}

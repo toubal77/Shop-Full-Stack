@@ -19,8 +19,10 @@ import { Filters, ShopCard } from '../components';
 import { useAppContext } from '../context';
 import { ShopService } from '../services';
 import { ResponseArray, Shop } from '../types';
+import { useTranslation } from 'react-i18next';
 
 const Home = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { setLoading } = useAppContext();
     const [shops, setShops] = useState<Shop[] | null>(null);
@@ -68,7 +70,7 @@ const Home = () => {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
             <Typography variant={isMobile ? 'h4' : 'h2'} textAlign="center">
-                Les boutiques
+                {t('home.title')}
             </Typography>
 
             <Box
@@ -85,7 +87,7 @@ const Home = () => {
                     }}
                 >
                     <AddIcon sx={{ mr: 1 }} />
-                    Ajouter une boutique
+                    {t('home.LBL_ADD_SHOP')}
                 </Fab>
             </Box>
 
@@ -100,7 +102,7 @@ const Home = () => {
                 }}
             >
                 <FormControl sx={{ minWidth: 200 }}>
-                    <InputLabel id="demo-simple-select-label">Trier par</InputLabel>
+                    <InputLabel id="demo-simple-select-label">{t('home.filters.trier_par')}</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -109,11 +111,11 @@ const Home = () => {
                         onChange={handleChangeSort}
                     >
                         <MenuItem value="">
-                            <em>Aucun</em>
+                            <em>{t('home.filters.default_value')}</em>
                         </MenuItem>
-                        <MenuItem value="name">Nom</MenuItem>
-                        <MenuItem value="createdAt">Date de création</MenuItem>
-                        <MenuItem value="nbProducts">Nombre de produits</MenuItem>
+                        <MenuItem value="name">{t('home.filters.name')}</MenuItem>
+                        <MenuItem value="createdAt">{t('home.filters.createdAt')}</MenuItem>
+                        <MenuItem value="nbProducts">{t('home.filters.nbProducts')}</MenuItem>
                     </Select>
                 </FormControl>
 
@@ -145,7 +147,7 @@ const Home = () => {
                 />
             ) : (
                 <Typography variant="h5" sx={{ mt: -1 }}>
-                    Aucune boutique correspondante
+                    t('home.list_vide')
                 </Typography>
             )}
         </Box>

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Shop } from '../types';
 import { pluralize } from '../utils';
 import { useMediaQuery, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
     shop: Shop;
@@ -13,7 +14,7 @@ type Props = {
 
 const ShopCard = ({ shop }: Props) => {
     const navigate = useNavigate();
-
+    const { t } = useTranslation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     
@@ -31,9 +32,9 @@ const ShopCard = ({ shop }: Props) => {
                     {shop.nbProducts} {pluralize('produit', shop.nbProducts)}
                 </Typography>
                 <Typography sx={{ my: 1.5 }} color="text.secondary">
-                    Créée le : {moment(shop.createdAt).format('DD/MM/YYYY')}
+                    {t('shopCard.createdAt')} {moment(shop.createdAt).format('DD/MM/YYYY')}
                 </Typography>
-                <Typography>En congé : {shop.inVacations ? 'oui' : 'non'}</Typography>
+                <Typography>{t('shopCard.vacations')} {shop.inVacations ? 'oui' : 'non'}</Typography>
             </CardContent>
         </Card>
     );

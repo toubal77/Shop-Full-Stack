@@ -7,17 +7,19 @@ import { CategoryService, ProductService, ShopService } from '../services';
 import { MinimalProduct } from '../types';
 import Locale from '../types/locale';
 import { formatterProductForm, getLocalizedProduct } from '../utils';
+import { useTranslation } from 'react-i18next';
 
-const schema = (product: MinimalProduct) => ({
-    nameFr: product.localizedProducts[0].name ? '' : 'Ce champ est requis',
+const schema = (product: MinimalProduct, t: any) => ({
+    nameFr: product.localizedProducts[0].name ? '' : t('products.form.champ_requis'),
     nameEn:
         !product.localizedProducts[1].name && !!product.localizedProducts[1].description
-            ? 'Une description est fournie en anglais donc le nom est requis'
+            ? t('products.form.champ_requis_description')
             : '',
-    price: product.price >= 0 ? '' : 'Le prix ne peut pas être un nombre négatif',
+    price: product.price >= 0 ? '' : t('products.form.champ_requis_price'),
 });
 
 const ProductForm = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const isAddMode = !id;
     const navigate = useNavigate();
@@ -98,8 +100,9 @@ const ProductForm = () => {
     };
 
     const validate = () => {
-        setErrors(schema(product));
-        return Object.values(schema(product)).every((o) => o == '');
+        const validationErrors = schema(product, t);
+        setErrors(validationErrors);
+        return Object.values(validationErrors).every((o) => o === "");
     };
 
     const handleSubmit = () => {
@@ -146,11 +149,11 @@ const ProductForm = () => {
     return (
         <Paper elevation={1} sx={{ padding: 4 }}>
             <Typography variant={isMobile ? "h4" : isTablette ? "h3" : "h2"} sx={{ marginBottom: 3, textAlign: 'center' }}>
-                {isAddMode ? 'Ajouter un produit' : 'Modifier le produit'}
+                {isAddMode ? t('products.form.ADD_PRODUCT') : t('products.form.EDIT_PRODUCT')}
             </Typography>
 
             <FormControl sx={{ display: 'block', ml: 'auto', mr: 'auto', width: isMobile ? '100%' : '75%', mb: 3 }}>
-                <Divider>Nom du produit</Divider>
+                <Divider>{t('products.form.nom_product')}</Divider>
                 <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 4, mt: 2, mb: 6 }}>
                     <TextField
                         autoFocus
@@ -175,7 +178,7 @@ const ProductForm = () => {
                     />
                 </Box>
 
-                <Divider>Description</Divider>
+                <Divider>{t('products.form.description')}</Divider>
                 <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 4, mt: 2, mb: 6 }}>
                     <TextField
                         autoFocus
@@ -199,7 +202,7 @@ const ProductForm = () => {
                     />
                 </Box>
 
-                <Divider>Informations supplémentaires</Divider>
+                <Divider>{t('products.form.info_supplementaire')}</Divider>
                 <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 4, mt: 2, mb: 3 }}>
                     <TextField
                         autoFocus
@@ -240,7 +243,7 @@ const ProductForm = () => {
 
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Button onClick={handleSubmit} variant="contained" size="large" sx={{ width: '30%' }}>
-                        {isAddMode ? 'Créer' : 'Modifier'}
+                        {isAddMode ? t('products.form.btn_create') : t('products.form.btn_edit')}
                     </Button>
                 </Box>
             </FormControl>

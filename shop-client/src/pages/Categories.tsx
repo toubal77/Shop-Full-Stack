@@ -6,8 +6,10 @@ import { CategoryCard } from '../components';
 import { useAppContext } from '../context';
 import { CategoryService } from '../services';
 import { Category } from '../types';
+import { useTranslation } from 'react-i18next';
 
 const Categories = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { setLoading } = useAppContext();
     const [categories, setCategories] = useState<Category[] | null>(null);
@@ -40,7 +42,7 @@ const Categories = () => {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: { xs: 2, sm: 3, md: 4 } }}>
             <Typography variant={isMobile ? 'h4' : 'h2'} textAlign="center">
-                Les catégories
+                {t('categories.title')}
             </Typography>
 
             <Box
@@ -53,7 +55,7 @@ const Categories = () => {
             >
                 <Fab variant="extended" color="primary" aria-label="add" onClick={() => navigate('/category/create')}>
                     <AddIcon sx={{ mr: 1 }} />
-                    Ajouter une catégorie
+                    {t('categories.LBL_ADD_CATEGORIE')}
                 </Fab>
             </Box>
 
@@ -82,7 +84,7 @@ const Categories = () => {
                 />
             ) : (
                 <Typography variant="h5" sx={{ mt: -1 }}>
-                    Aucune catégorie correspondante
+                    {t('categories.list_vide')}
                 </Typography>
             )}
         </Box>

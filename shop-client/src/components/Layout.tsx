@@ -4,19 +4,21 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loader from './Loader';
 import SwitchLanguage from './SwitchLanguage';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
     children: JSX.Element;
 };
 
 const navItems = [
-    { label: 'Boutiques', path: '/' },
-    { label: 'Produits', path: '/product' },
-    { label: 'Catégories', path: '/category' },
+    { label: 'boutiques', path: '/' },
+    { label: 'produits', path: '/product' },
+    { label: 'catégories', path: '/category' },
 ];
 
 const Layout = ({ children }: Props) => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const handleDrawerToggle = () => {
@@ -25,18 +27,16 @@ const Layout = ({ children }: Props) => {
 
     const drawer = (
         <Box sx={{ width: 240, padding: 2, backgroundColor: '#f4f4f4', height: '100%' }}>
-            {/* box pour le titre */}
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
                 <Typography
                     variant="h6"
                     sx={{ cursor: 'pointer', fontWeight: 'bold', color: '#3f51b5' }}
                     onClick={() => navigate('/')}
                 >
-                    Gestion de boutiques
+                    {t('header.title')}
                 </Typography>
             </Box>
 
-            {/* navigation */}
             <Box sx={{ mb: 2 }}>
                 {navItems.map((item) => (
                     <Button
@@ -52,7 +52,7 @@ const Layout = ({ children }: Props) => {
                             setMobileOpen(false);
                         }}
                     >
-                        {item.label}
+                        {t(`header.${item.label.toLowerCase()}`)}
                     </Button>
                 ))}
             </Box>
@@ -63,15 +63,12 @@ const Layout = ({ children }: Props) => {
         <div>
             <AppBar component="nav">
                 <Toolbar>
-                    {/* icone de menu pour les petits ecran */}
                     <IconButton
                         color="inherit" aria-label="open drawer" edge="start"
                         onClick={handleDrawerToggle} sx={{ display: { sm: 'none' }, mr: 2 }}
                     >
                         <MenuIcon />
                     </IconButton>
-
-                    {/* titre */}
                     <Typography
                         variant="h6"
                         sx={{
@@ -80,14 +77,13 @@ const Layout = ({ children }: Props) => {
                         }}
                         onClick={() => navigate('/')}
                     >
-                        Gestion de boutiques
+                        {t('header.title')}
                     </Typography>
 
-                    {/* navigation pour les ecrans large */}
                     <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                         {navItems.map((item) => (
                             <Button key={item.label} sx={{ color: '#fff' }} onClick={() => navigate(item.path)}>
-                                {item.label}
+                                {t(`header.${item.label.toLowerCase()}`)}
                             </Button>
                         ))}
                     </Box>
@@ -97,7 +93,6 @@ const Layout = ({ children }: Props) => {
                 </Toolbar>
             </AppBar>
 
-            {/* menu Drawer pour les petits ecrans */}
             <Drawer
                 anchor="left"
                 open={mobileOpen}
