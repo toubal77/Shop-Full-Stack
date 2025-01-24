@@ -3,9 +3,9 @@ package fr.fullstack.shopapp.controller;
 import fr.fullstack.shopapp.model.Category;
 import fr.fullstack.shopapp.service.CategoryService;
 import fr.fullstack.shopapp.util.ErrorValidation;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/categories")
@@ -31,7 +31,11 @@ public class CategoryController {
     @Autowired
     private CategoryService service;
 
-    @ApiOperation(value = "Create a category")
+    @Operation(summary = "Create a category", description = "Creates a new category in the system")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category successfully created"),
+            @ApiResponse(responseCode = "400", description = "Validation error or bad request")
+    })
     @PostMapping
     public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category, Errors errors) {
         if (errors.hasErrors()) {
@@ -46,7 +50,11 @@ public class CategoryController {
         }
     }
 
-    @ApiOperation(value = "Delete a category by its id")
+    @Operation(summary = "Delete a category", description = "Deletes a category by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Category successfully deleted"),
+            @ApiResponse(responseCode = "400", description = "Bad request or invalid ID")
+    })
     @DeleteMapping("/{id}")
     public HttpStatus deleteCategory(@PathVariable long id) {
         try {
@@ -57,22 +65,20 @@ public class CategoryController {
         }
     }
 
-    @ApiOperation(value = "Get categories")
     @GetMapping
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page",
-                              dataType = "integer",
-                              paramType = "query",
-                              value = "Results page you want to retrieve (0..N)",
-                              defaultValue = "0"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                              value = "Number of records per page", defaultValue = "5"),
+    @Operation(summary = "Get all categories", description = "Retrieves a paginated list of categories")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of categories retrieved successfully")
     })
     public ResponseEntity<Page<Category>> getAllCategories(Pageable pageable) {
         return ResponseEntity.ok(service.getCategoryList(pageable));
     }
 
-    @ApiOperation(value = "Get a category by id")
+    @Operation(summary = "Get a category by ID", description = "Retrieves a category by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid ID or category not found")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable long id) {
         try {
@@ -82,7 +88,11 @@ public class CategoryController {
         }
     }
 
-    @ApiOperation(value = "Update a category")
+   @Operation(summary = "Update a category", description = "Updates an existing category")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category successfully updated"),
+            @ApiResponse(responseCode = "400", description = "Validation error or bad request")
+    })
     @PutMapping
     public ResponseEntity<Category> updateCategory(@Valid @RequestBody Category category, Errors errors) {
         if (errors.hasErrors()) {
