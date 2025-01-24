@@ -17,7 +17,7 @@ services:
       - ./shop-server/sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
     networks:
       - postgres
-    
+
   elasticsearch:
     container_name: shop-elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.25
@@ -28,11 +28,18 @@ services:
       - "9200:9200"
     networks:
       - postgres
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     depends_on:
-      - "db"
-      - "elasticsearch"
+      elasticsearch:
+        condition: service_healthy
+      db:
+        condition: service_started
     container_name: shop-server
     build: ./shop-server
     ports:
