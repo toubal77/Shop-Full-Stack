@@ -1,20 +1,29 @@
-# Use a lighter version of Node as a parent image
-FROM node:19-alpine
+# Use Node LTS version
+FROM node:20-alpine
 
-# Set the working directory to /app
+# Set the working directory
 WORKDIR /app
 
-# copy package.json into the container at /app
-COPY package.json /app/package.json
+# Copy package files
+COPY package*.json ./
 
-# install dependencies
-RUN npm install
+# Configure npm
+RUN npm config set fetch-retry-maxtimeout 600000 \
+    && npm config set fetch-retry-mintimeout 100000 \
+    && npm config set fetch-timeout 600000 \
+    && npm config set registry https://registry.npmmirror.com
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Install dependencies with increased network timeout
+RUN npm install --network-timeout=600000
 
-# Expose port
+# Install cross-env globally
+RUN npm install -g cross-env
+
+# Copy the rest of the application
+COPY . .
+
+# Expose port 4200
 EXPOSE 4200
 
-# Run the app when the container launches
+# Start the app
 CMD ["npm", "start"]
