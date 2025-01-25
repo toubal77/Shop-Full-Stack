@@ -26,7 +26,9 @@ import { Dayjs } from 'dayjs';
 import { MinimalShop, ObjectPropertyString } from '../types';
 import { useAppContext, useToastContext } from '../context';
 import { useTranslation } from 'react-i18next';
-
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
 const schema = (shop: MinimalShop, t: any) => ({
     name: shop.name ? '' : t('shop.form.champ_requis'),
 });
@@ -36,8 +38,9 @@ const ShopForm = () => {
     const { id } = useParams();
     const isAddMode = !id;
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    const { setToast } = useToastContext();
+    //const { setToast } = useToastContext();
     const [errors, setErrors] = useState<ObjectPropertyString<MinimalShop>>();
     const [shop, setShop] = useState<MinimalShop>({
         name: '',
@@ -62,33 +65,25 @@ const ShopForm = () => {
     };
 
     const createShop = () => {
-        setLoading(true);
-        ShopService.createShop(shop)
-            .then(() => {
-                navigate('/');
-                setToast({ severity: 'success', message: 'La boutique a bien été créée' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la création' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleAction(
+            ShopService.createShop(shop),
+            'La boutique a bien été créée',
+            '/',
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
 
     const editShop = () => {
-        setLoading(true);
-        ShopService.editShop(shop)
-            .then(() => {
-                navigate(`/shop/${id}`);
-                setToast({ severity: 'success', message: 'La boutique a bien été modifiée' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la modification' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleAction(
+            ShopService.createShop(shop),
+            'La boutique a bien été modifié',
+            `/shop/${id}`,
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
 
     useEffect(() => {

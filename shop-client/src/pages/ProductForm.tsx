@@ -8,7 +8,9 @@ import { MinimalProduct } from '../types';
 import Locale from '../types/locale';
 import { formatterProductForm, getLocalizedProduct } from '../utils';
 import { useTranslation } from 'react-i18next';
-
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
 const schema = (product: MinimalProduct, t: any) => ({
     nameFr: product.localizedProducts[0].name ? '' : t('products.form.champ_requis'),
     nameEn:
@@ -23,8 +25,9 @@ const ProductForm = () => {
     const { id } = useParams();
     const isAddMode = !id;
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    const { setToast } = useToastContext();
+    //const { setToast } = useToastContext();
     const [errors, setErrors] = useState<any>({});
     const [product, setProduct] = useState<MinimalProduct>({
         price: 0,
@@ -68,36 +71,29 @@ const ProductForm = () => {
     useEffect(() => {
         !isAddMode && id && getProduct(id);
     }, [isAddMode]);
-
+    
     const createProduct = (productToCreate: MinimalProduct) => {
-        setLoading(true);
-        ProductService.createProduct(productToCreate)
-            .then(() => {
-                navigate('/product');
-                setToast({ severity: 'success', message: 'Le produit a bien été créé' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la création' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleAction(
+            ProductService.createProduct(productToCreate),
+            'Le produit a bien été créé',
+            '/product',
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
-
+    
     const editProduct = (productToEdit: MinimalProduct) => {
-        setLoading(true);
-        ProductService.editProduct(productToEdit)
-            .then(() => {
-                navigate(`/product/${id}`);
-                setToast({ severity: 'success', message: 'Le produit a bien été modifié' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la modification' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleAction(
+            ProductService.editProduct(productToEdit),
+            'Le produit a bien été modifié',
+            `/product/${id}`,
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
+      
 
     const validate = () => {
         const validationErrors = schema(product, t);

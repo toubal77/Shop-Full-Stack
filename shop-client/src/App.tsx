@@ -4,13 +4,14 @@ import './assets/App.css';
 import { Layout } from './components';
 import { AppProvider, myTheme, ToastProvider } from './context';
 import routes from './routes/routes';
+import ToastNotification from './components/ToastNotification';
 
 const App = () => {
     return (
         <div className="App">
             <AppProvider>
                 <ThemeProvider theme={myTheme}>
-                    <ToastProvider>
+                
                         <BrowserRouter>
                             <Routes>
                                 {routes.map((route) => (
@@ -25,8 +26,9 @@ const App = () => {
                                     />
                                 ))}
                             </Routes>
+                            <ToastNotification />
                         </BrowserRouter>
-                    </ToastProvider>
+            
                 </ThemeProvider>
             </AppProvider>
         </div>

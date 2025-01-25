@@ -7,14 +7,18 @@ import { ShopService } from '../services';
 import { Shop } from '../types';
 import { useAppContext, useToastContext } from '../context';
 import { pluralize } from '../utils';
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
 import { useTranslation } from 'react-i18next';
 
 const ShopDetails = () => {
     const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    const { setToast } = useToastContext();
+    //const { setToast } = useToastContext();
     const [shop, setShop] = useState<Shop | null>(null);
 
     const getShop = (shopId: string) => {
@@ -34,19 +38,15 @@ const ShopDetails = () => {
     };
 
     const handleDelete = () => {
-        setLoading(true);
-        id &&
-            ShopService.deleteShop(id)
-                .then(() => {
-                    navigate('/');
-                    setToast({ severity: 'success', message: 'La boutique a bien été supprimée' });
-                })
-                .catch(() => {
-                    setToast({ severity: 'error', message: 'Une erreur est survenue lors de la suppresion' });
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+        if (!id) return; 
+        handleAction(
+            ShopService.deleteShop(id), 
+            'La boutique a bien été supprimée',
+            '/',
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
 
     const handleEdit = () => {

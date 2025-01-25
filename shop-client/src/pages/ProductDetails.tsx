@@ -7,13 +7,17 @@ import { ProductService } from '../services';
 import { FormattedProduct, Product } from '../types';
 import { formatterLocalizedProduct, priceFormatter } from '../utils';
 import { useTranslation } from 'react-i18next';
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
 
 const ProductDetails = () => {
     const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading, locale } = useAppContext();
-    const { setToast } = useToastContext();
+    //const { setToast } = useToastContext();
     const [product, setProduct] = useState<Product | null>(null);
     const [formattedProduct, setFormattedProduct] = useState<FormattedProduct | null>();
 
@@ -32,19 +36,15 @@ const ProductDetails = () => {
     }, [locale, product]);
 
     const handleDelete = () => {
-        setLoading(true);
-        id &&
-            ProductService.deleteProduct(id)
-                .then(() => {
-                    navigate('/product');
-                    setToast({ severity: 'success', message: 'Le produit a bien été supprimé' });
-                })
-                .catch(() => {
-                    setToast({ severity: 'error', message: 'Une erreur est survenue lors de la suppresion' });
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+        if (!id) return; 
+        handleAction(
+            ProductService.deleteProduct(id),
+            'Le produit a bien été supprimé',
+            '/',
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
 
     const handleEdit = () => {
