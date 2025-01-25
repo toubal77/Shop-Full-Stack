@@ -1,5 +1,6 @@
 package fr.fullstack.shopapp.controller;
 
+import fr.fullstack.shopapp.service.ElasticsearchService;
 import fr.fullstack.shopapp.model.Shop;
 import fr.fullstack.shopapp.service.ShopService;
 import fr.fullstack.shopapp.util.ErrorValidation;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
+
+import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
@@ -26,6 +29,8 @@ public class ShopController {
 
     @Autowired
     private ShopService service;
+    @Autowired
+    private ElasticsearchService elasticsearchService;
 
     @Operation(summary = "Create a shop", description = "Creates a new shop in the system")
     @ApiResponses(value = {
@@ -114,6 +119,35 @@ public class ShopController {
             return ResponseEntity.ok().body(service.updateShop(shop));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Search shops with Elasticsearch", description = "Full text search on shops with filters")
+    public ResponseEntity<Page<Shop>> searchShops(
+            @Parameter(description = "Text to search in shop names")
+            @RequestParam(required = false) String searchText,
+            @Parameter(description = "Filter shops by vacation status")
+            @RequestParam(required = false) Optional<Boolean> inVacations,
+            @Parameter(description = "Filter shops created after date (format: yyyy-MM-dd)")
+            @RequestParam(required = false) Optional<LocalDate> createdAfter,
+            @Parameter(description = "Filter shops created before date (format: yyyy-MM-dd)")
+            @RequestParam(required = false) Optional<LocalDate> createdBefore,
+            Pageable pageable) {
+
+        return ResponseEntity.ok(elasticsearchService.searchShops(
+                searchText, inVacations, createdAfter, createdBefore, pageable));
+    }
+
+    @PostMapping("/reindex")
+    @Operation(summary = "Reindex all shops in Elasticsearch")
+    public ResponseEntity<Void> reindexAll() {
+        try {
+            elasticsearchService.reindexAll();
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error during reindexing: " + e.getMessage());
         }
     }
 }
