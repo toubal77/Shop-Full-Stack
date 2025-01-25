@@ -25,12 +25,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Dayjs } from 'dayjs';
 import { MinimalShop, ObjectPropertyString } from '../types';
 import { useAppContext, useToastContext } from '../context';
+import { useTranslation } from 'react-i18next';
 
-const schema = (shop: MinimalShop) => ({
-    name: shop.name ? '' : 'Ce champ est requis',
+const schema = (shop: MinimalShop, t: any) => ({
+    name: shop.name ? '' : t('shop.form.champ_requis'),
 });
 
 const ShopForm = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const isAddMode = !id;
     const navigate = useNavigate();
@@ -112,8 +114,9 @@ const ShopForm = () => {
     };
 
     const validate = () => {
-        setErrors(schema(shop));
-        return Object.values(schema(shop)).every((o) => o == '');
+        const validationErrors = schema(shop, t);
+        setErrors(validationErrors);
+        return Object.values(validationErrors).every((o) => o === "");
     };
 
     const handleSubmit = () => {
@@ -128,11 +131,11 @@ const ShopForm = () => {
     return (
         <Paper elevation={1} sx={{ padding: 4 }}>
             <Typography variant={isMobile ? 'h4' : isTablet ? 'h3' : 'h2'} sx={{ marginBottom: 3, textAlign: 'center' }}>
-                {isAddMode ? 'Ajouter une boutique' : 'Modifier la boutique'}
+                {isAddMode ? t('shop.form.LBL_ADD_SHOP') : t('shop.form.LBL_EDIT_SHOP') }
             </Typography>
 
             <Box sx={{ display: 'block', ml: 'auto', mr: 'auto', width: isMobile ? '100%' : '80%', mb: 3 }}>
-                <Divider>Informations de la boutique</Divider>
+                <Divider>{t('shop.form.info_shop')}</Divider>
                 <FormControl sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -167,7 +170,7 @@ const ShopForm = () => {
 
                 {/* OpeningHours */}
                 <Divider  sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
-                    Horaires d&apos;ouverture de la boutique</Divider>
+                    {t('shop.form.heures_ouvertures')}</Divider>
                 <Box sx={{ mt: 1, mb: 3 }}>
                     <Fab size="small" color="primary" aria-label="add">
                         <AddIcon onClick={handleClickAddHours} />
@@ -196,13 +199,13 @@ const ShopForm = () => {
                                         onChange={(e) => handleChange(index, 'day', e.target.value)}
                                         fullWidth
                                     >
-                                        <MenuItem value={1}>Lundi</MenuItem>
-                                        <MenuItem value={2}>Mardi</MenuItem>
-                                        <MenuItem value={3}>Mercredi</MenuItem>
-                                        <MenuItem value={4}>Jeudi</MenuItem>
-                                        <MenuItem value={5}>Vendredi</MenuItem>
-                                        <MenuItem value={6}>Samedi</MenuItem>
-                                        <MenuItem value={7}>Dimanche</MenuItem>
+                                        <MenuItem value={1}>{t('openingDays.1')}</MenuItem>
+                                        <MenuItem value={2}>{t('openingDays.2')}</MenuItem>
+                                        <MenuItem value={3}>{t('openingDays.3')}</MenuItem>
+                                        <MenuItem value={4}>{t('openingDays.4')}</MenuItem>
+                                        <MenuItem value={5}>{t('openingDays.5')}</MenuItem>
+                                        <MenuItem value={6}>{t('openingDays.6')}</MenuItem>
+                                        <MenuItem value={7}>{t('openingDays.7')}</MenuItem>
                                     </Select>
                                 </FormControl>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -246,7 +249,7 @@ const ShopForm = () => {
                 <Button variant="contained" onClick={handleSubmit}
                     sx={{ padding: 1, width: isMobile ? '100%' : 'auto' }}
                 >
-                    {isAddMode ? 'Ajouter' : 'Modifier'}
+                    {isAddMode ? t('shop.form.ADD_SHOP') : t('shop.form.EDIT_SHOP')}
                 </Button>
             </Box>
         </Paper>

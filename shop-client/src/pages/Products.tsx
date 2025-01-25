@@ -6,8 +6,10 @@ import { ProductCard } from '../components';
 import { useAppContext } from '../context';
 import { ProductService } from '../services';
 import { Product } from '../types';
+import { useTranslation } from 'react-i18next';
 
 const Products = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { setLoading } = useAppContext();
     const [products, setProducts] = useState<Product[] | null>(null);
@@ -40,7 +42,7 @@ const Products = () => {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: { xs: 2, sm: 3, md: 4 } }}>
             <Typography variant={isMobile ? 'h4' : 'h2'} textAlign="center">
-                Les produits
+                {t('products.title')}
             </Typography>
 
             <Box
@@ -53,7 +55,7 @@ const Products = () => {
             >
                 <Fab variant="extended" color="primary" aria-label="add" onClick={() => navigate('/product/create')}>
                     <AddIcon sx={{ mr: 1 }} />
-                    Ajouter un produit
+                    {t('products.LBL_ADD_PRODUCT')}
                 </Fab>
             </Box>
 
@@ -82,7 +84,7 @@ const Products = () => {
                 />
             ) : (
                 <Typography variant="h5" sx={{ mt: -1 }}>
-                    Aucun produit correspondant
+                    {t('products.list_vide')}
                 </Typography>
             )}
         </Box>

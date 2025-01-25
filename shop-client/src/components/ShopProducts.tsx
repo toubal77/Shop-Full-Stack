@@ -5,12 +5,14 @@ import { Box, FormControl, Grid, Pagination, Typography } from '@mui/material';
 import ProductCard from './ProductCard';
 import { useAppContext } from '../context';
 import SelectPaginate from './SelectPaginate';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
     shopId: string;
 };
 
 const ShopProducts = ({ shopId }: Props) => {
+    const { t } = useTranslation();
     const { setLoading } = useAppContext();
     const [products, setProducts] = useState<Product[] | null>(null);
     const [count, setCount] = useState<number>(0);
@@ -86,7 +88,7 @@ const ShopProducts = ({ shopId }: Props) => {
                 />
             ) : (
                 <Typography variant="h6" sx={{ mt: 4 }}>
-                    Aucun produit correspondant
+                    {t('products.list_vide')}
                 </Typography>
             )}
         </Box>
