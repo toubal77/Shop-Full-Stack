@@ -18,7 +18,7 @@ export const handleAction = (
     redirectPath: string,
     dispatch: AppDispatch,
     navigate: NavigateFunction,
-    setLoading?: (loading: boolean) => void
+    setLoading?: (loading: boolean) => void,
 ) => {
     if (setLoading) setLoading(true);
     action
@@ -27,9 +27,7 @@ export const handleAction = (
             dispatch(setToast({ severity: 'success', message: successMessage }));
         })
         .catch((error) => {
-            const errorMessage =
-                error?.response?.data?.message ||
-                'Une erreur est survenue lors de l\'opération';
+            const errorMessage = error?.response?.data?.message || "Une erreur est survenue lors de l'opération";
 
             dispatch(setToast({ severity: 'error', message: errorMessage }));
         })

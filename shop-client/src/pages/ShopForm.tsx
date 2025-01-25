@@ -11,6 +11,7 @@ import {
     Select,
     Switch,
     TextField,
+    TextFieldProps,
     Typography,
     useMediaQuery,
     useTheme,
@@ -22,7 +23,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ShopService } from '../services';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { MinimalShop, ObjectPropertyString } from '../types';
 import { useAppContext } from '../context';
 import { useTranslation } from 'react-i18next';
@@ -41,6 +42,8 @@ const ShopForm = () => {
     const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
     const [errors, setErrors] = useState<ObjectPropertyString<MinimalShop>>();
+    const renderTimeField = (params: TextFieldProps) => <TextField {...params} fullWidth />;
+
     const [shop, setShop] = useState<MinimalShop>({
         name: '',
         inVacations: false,
@@ -64,14 +67,7 @@ const ShopForm = () => {
     };
 
     const createShop = () => {
-        handleAction(
-            ShopService.createShop(shop),
-            'La boutique a bien été créée',
-            '/',
-            dispatch,
-            navigate,
-            setLoading
-        );
+        handleAction(ShopService.createShop(shop), 'La boutique a bien été créée', '/', dispatch, navigate, setLoading);
     };
 
     const editShop = () => {
@@ -81,7 +77,7 @@ const ShopForm = () => {
             `/shop/${id}`,
             dispatch,
             navigate,
-            setLoading
+            setLoading,
         );
     };
 
@@ -95,7 +91,7 @@ const ShopForm = () => {
             acc[curr.day].push(curr);
             return acc;
         }, {});
-    
+
         for (const day in groupedByDay) {
             const dayHours = groupedByDay[day];
             for (let i = 0; i < dayHours.length; i++) {
@@ -104,9 +100,10 @@ const ShopForm = () => {
                     const endA = dayHours[i].closeAt;
                     const startB = dayHours[j].openAt;
                     const endB = dayHours[j].closeAt;
-    
+
                     if (
-                        (startA < endB && endA > startB) // Overlapping condition
+                        startA < endB &&
+                        endA > startB // Overlapping condition
                     ) {
                         return true;
                     }
@@ -115,17 +112,16 @@ const ShopForm = () => {
         }
         return false;
     };
-    
 
     const handleChange = (index: number, key: string, value: number | string | undefined) => {
         const openingHours = [...shop.openingHours];
         const openingHour = { ...openingHours[index], [key]: value };
         openingHours[index] = openingHour;
-    
+
         if (key === 'openAt' || key === 'closeAt') {
             const openTime = openingHour.openAt || openingHours[index].openAt;
             const closeTime = openingHour.closeAt || openingHours[index].closeAt;
-    
+
             if (openTime && closeTime && openTime >= closeTime) {
                 setToast({
                     severity: 'error',
@@ -134,12 +130,12 @@ const ShopForm = () => {
                 return;
             }
         }
-    
+
         if (hasConflict(openingHours)) {
-            setToast({severity: 'error', message: "Les horaires se chevauchent pour un même jour"});
+            setToast({ severity: 'error', message: 'Les horaires se chevauchent pour un même jour' });
             return;
         }
-    
+
         setShop({ ...shop, openingHours });
     };
 
@@ -153,7 +149,7 @@ const ShopForm = () => {
 
     const validate = () => {
         if (hasConflict(shop.openingHours)) {
-            setToast({severity: 'error', message: 'Les horaires se chevauchent pour un même jour'});
+            setToast({ severity: 'error', message: 'Les horaires se chevauchent pour un même jour' });
             return false;
         }
         setErrors(schema(shop, t));
@@ -171,19 +167,25 @@ const ShopForm = () => {
 
     return (
         <Paper elevation={1} sx={{ padding: 4 }}>
-            <Typography variant={isMobile ? 'h4' : isTablet ? 'h3' : 'h2'} sx={{ marginBottom: 3, textAlign: 'center' }}>
-                {isAddMode ? t('shop.form.LBL_ADD_SHOP') : t('shop.form.LBL_EDIT_SHOP') }
+            <Typography
+                variant={isMobile ? 'h4' : isTablet ? 'h3' : 'h2'}
+                sx={{ marginBottom: 3, textAlign: 'center' }}
+            >
+                {isAddMode ? t('shop.form.LBL_ADD_SHOP') : t('shop.form.LBL_EDIT_SHOP')}
             </Typography>
 
             <Box sx={{ display: 'block', ml: 'auto', mr: 'auto', width: isMobile ? '100%' : '80%', mb: 3 }}>
                 <Divider>{t('shop.form.info_shop')}</Divider>
-                <FormControl sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    ml: 'auto',
-                    mr: 'auto',
-                    width: '70%',
-                    mb: 2, }}>
+                <FormControl
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        ml: 'auto',
+                        mr: 'auto',
+                        width: '70%',
+                        mb: 2,
+                    }}
+                >
                     <TextField
                         autoFocus
                         required
@@ -210,8 +212,9 @@ const ShopForm = () => {
                 </FormControl>
 
                 {/* OpeningHours */}
-                <Divider  sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
-                    {t('shop.form.heures_ouvertures')}</Divider>
+                <Divider sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
+                    {t('shop.form.heures_ouvertures')}
+                </Divider>
                 <Box sx={{ mt: 1, mb: 3 }}>
                     <Fab size="small" color="primary" aria-label="add">
                         <AddIcon onClick={handleClickAddHours} />
@@ -253,22 +256,22 @@ const ShopForm = () => {
                                     <TimePicker
                                         label="Ouvre à"
                                         ampm={false}
-                                        value={`2014-08-18T${openingHour.openAt}`}
+                                        value={dayjs(`2014-08-18T${openingHour.openAt}`)}
                                         onChange={(v: Dayjs | null) =>
                                             handleChange(index, 'openAt', v?.format('HH:mm:ss'))
                                         }
-                                        renderInput={(params) => <TextField {...params} fullWidth />}
+                                        slotProps={{ textField: { fullWidth: true } }}
                                     />
                                 </LocalizationProvider>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <TimePicker
                                         label="Ferme à"
                                         ampm={false}
-                                        value={`2014-08-18T${openingHour.closeAt}`}
+                                        value={dayjs(`2014-08-18T${openingHour.closeAt}`)}
                                         onChange={(v: Dayjs | null) =>
                                             handleChange(index, 'closeAt', v?.format('HH:mm:ss'))
                                         }
-                                        renderInput={(params) => <TextField {...params} fullWidth />}
+                                        slotProps={{ textField: { fullWidth: true } }}
                                     />
                                 </LocalizationProvider>
                                 <ClearIcon
@@ -287,7 +290,9 @@ const ShopForm = () => {
             </Box>
 
             <Box sx={{ textAlign: 'center', mt: 3 }}>
-                <Button variant="contained" onClick={handleSubmit}
+                <Button
+                    variant="contained"
+                    onClick={handleSubmit}
                     sx={{ padding: 1, width: isMobile ? '100%' : 'auto' }}
                 >
                     {isAddMode ? t('shop.form.ADD_SHOP') : t('shop.form.EDIT_SHOP')}

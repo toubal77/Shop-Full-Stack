@@ -9,6 +9,7 @@ import {
     MenuItem,
     Select,
     TextField,
+    TextFieldProps,
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -22,6 +23,8 @@ type FiltersType = {
     createdAfter: Dayjs | null;
     createdBefore: Dayjs | null;
 };
+
+const renderTextField = (params: TextFieldProps) => <TextField {...params} />;
 
 const transformFiltersToURL = (filters: FiltersType): string => {
     const transform = {
@@ -113,10 +116,10 @@ const Filters = ({ setUrlFilters, setSort, sort }: Props) => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DesktopDatePicker
                             label="Créée après"
-                            inputFormat="DD/MM/YYYY"
+                            format="DD/MM/YYYY"
                             value={filters.createdAfter}
                             onChange={(v: Dayjs | null) => handleChange('createdAfter', v)}
-                            renderInput={(params) => <TextField {...params} />}
+                            slotProps={{ textField: { fullWidth: true } }}
                         />
                     </LocalizationProvider>
                 </DialogContent>
@@ -125,10 +128,10 @@ const Filters = ({ setUrlFilters, setSort, sort }: Props) => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DesktopDatePicker
                             label="Créée avant"
-                            inputFormat="DD/MM/YYYY"
+                            format="DD/MM/YYYY"
                             value={filters.createdBefore}
                             onChange={(v: Dayjs | null) => handleChange('createdBefore', v)}
-                            renderInput={(params) => <TextField {...params} />}
+                            slotProps={{ textField: { fullWidth: true } }}
                         />
                     </LocalizationProvider>
                 </DialogContent>
