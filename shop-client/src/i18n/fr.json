@@ -1,0 +1,112 @@
+{
+    "header": {
+      "title": "Gestion de boutiques",
+      "boutiques": "Boutiques",
+      "produits": "Produits",
+      "catégories": "Catégories"
+    },
+    "home": {
+      "title": "Les boutiques",
+      "LBL_ADD_SHOP": "Ajouter une boutique",
+      "filters": {
+        "trier_par": "Trier par",
+        "default_value": "Aucun",
+        "name": "Nom",
+        "createdAt": "Date de création",
+        "nbProducts": "Nombre de produits"
+      },
+      "list_vide": "Aucune boutique correspondante"
+    },
+    "products": {
+      "title": "Les produits",
+      "LBL_ADD_PRODUCT": "Ajouter un produit",
+      "list_vide": "Aucun produit correspondant",
+      "form":{
+        "ADD_PRODUCT":"Ajouter un produit",
+        "EDIT_PRODUCT": "Modifier le produit",
+        "nom_product": "Nom du produit",
+        "description": "Description",
+        "info_supplementaire": "Informations supplémentaires",
+        "btn_create": "Créer",
+        "btn_edit": "Modifier",
+        "champ_requis": "Ce champ est requis",
+        "champ_requis_description": "Une description est fournie en anglais donc le nom est requis",
+        "champ_requis_price": "Le prix ne peut pas être un nombre négatif"
+      },
+      "list_vide": "Aucune produit correspondante"
+    },
+    "categories": {
+      "title": "Les catégories",
+      "LBL_ADD_CATEGORIE": "Ajouter une catégorie",
+      "list_vide": "Aucune catégorie correspondante",
+      "form":{
+        "ADD_CATEGORIE":"Ajouter une catégorie",
+        "EDIT_CATEGORIE": "Modifier la catégorie",
+        "info_categorie": "Informations de la catégorie",
+        "BTN_FORM": "Valider",
+        "champ_requis": "Ce champ est requis"
+      }
+    },
+    "shop": {
+      "form":{
+        "LBL_ADD_SHOP":"Ajouter une boutique",
+        "LBL_EDIT_SHOP": "Modifier la boutique",
+        "info_shop": "Informations de la boutique",
+        "heures_ouvertures": "Horaires d'ouverture de la boutique",
+        "ADD_SHOP": "Ajouter",
+        "EDIT_SHOP": "Modfier",
+        "champ_requis": "Ce champ est requis"
+      }
+    },
+    "shop_details": {
+      "details":{
+        "nbrProducts":"Cette boutique comporte",
+        "inVacations": "En congé actuellement",
+        "notVacations": "N'est pas en congé actuellement",
+        "createdAt": "Boutique créée le :",
+        "heure_ouverture": "Horaires d'ouverture :",
+        "products": "Les produits :"
+      }
+    },
+    "product_details": {
+      "details":{
+        "prix":"Prix",
+        "description": "Description",
+        "boutique": "Boutique",
+        "boutique_empty": "N'appartient à aucune boutique",
+        "categorie": "Catégories",
+        "empty": "Aucune"
+      }
+    },
+    "openingDays": {
+      "1": "Lundi",
+      "2": "Mardi",
+      "3": "Mercredi",
+      "4": "Jeudi",
+      "5": "Vendredi",
+      "6": "Samedi",
+      "7": "Dimanche"
+    },
+    "filters":{
+      "LBL_BTN": "Filtrer",
+      "title": "Filtrer les boutiques",
+      "vacations": "Congé",
+      "empty": "Aucun",
+      "inVacations": "En congé",
+      "notVacations": "Pas en congé",
+      "LBL_BTN_DELETE": "Effacer",
+      "LBL_BTN_CANCEL": "Annuler",
+      "LBL_BTN_VALID": "Valider"
+    },
+    "productCard": {
+      "price": "Prix :",
+      "shop": "Boutique :",
+      "category": "Catégories :",
+      "empty": "Aucune"
+    },
+    "shopCard": {
+      "createdAt": "Créée le :",
+      "vacations": "En congé :"
+    }
+}
+  

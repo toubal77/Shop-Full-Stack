@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Button, Divider, FormControl, InputAdornment, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, FormControl, InputAdornment, Paper, TextField, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SelectPaginate } from '../components';
@@ -8,22 +7,26 @@ import { CategoryService, ProductService, ShopService } from '../services';
 import { MinimalProduct } from '../types';
 import Locale from '../types/locale';
 import { formatterProductForm, getLocalizedProduct } from '../utils';
-
-const schema = (product: MinimalProduct) => ({
-    nameFr: product.localizedProducts[0].name ? '' : 'Ce champ est requis',
+import { useTranslation } from 'react-i18next';
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
+const schema = (product: MinimalProduct, t: any) => ({
+    nameFr: product.localizedProducts[0].name ? '' : t('products.form.champ_requis'),
     nameEn:
         !product.localizedProducts[1].name && !!product.localizedProducts[1].description
-            ? 'Une description est fournie en anglais donc le nom est requis'
+            ? t('products.form.champ_requis_description')
             : '',
-    price: product.price >= 0 ? '' : 'Le prix ne peut pas être un nombre négatif',
+    price: product.price >= 0 ? '' : t('products.form.champ_requis_price'),
 });
 
 const ProductForm = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const isAddMode = !id;
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    const { setToast } = useToastContext();
     const [errors, setErrors] = useState<any>({});
     const [product, setProduct] = useState<MinimalProduct>({
         price: 0,
@@ -42,6 +45,10 @@ const ProductForm = () => {
             },
         ],
     });
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isTablette = useMediaQuery(theme.breakpoints.down('md'));
 
     const getProduct = (productId: string) => {
         setLoading(true);
@@ -63,40 +70,34 @@ const ProductForm = () => {
     useEffect(() => {
         !isAddMode && id && getProduct(id);
     }, [isAddMode]);
-
+    
     const createProduct = (productToCreate: MinimalProduct) => {
-        setLoading(true);
-        ProductService.createProduct(productToCreate)
-            .then(() => {
-                navigate('/product');
-                setToast({ severity: 'success', message: 'Le produit a bien été créé' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la création' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleAction(
+            ProductService.createProduct(productToCreate),
+            'Le produit a bien été créé',
+            '/product',
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
-
+    
     const editProduct = (productToEdit: MinimalProduct) => {
-        setLoading(true);
-        ProductService.editProduct(productToEdit)
-            .then(() => {
-                navigate(`/product/${id}`);
-                setToast({ severity: 'success', message: 'Le produit a bien été modifié' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la modification' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleAction(
+            ProductService.editProduct(productToEdit),
+            'Le produit a bien été modifié',
+            `/product/${id}`,
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
+      
 
     const validate = () => {
-        setErrors(schema(product));
-        return Object.values(schema(product)).every((o) => o == '');
+        const validationErrors = schema(product, t);
+        setErrors(validationErrors);
+        return Object.values(validationErrors).every((o) => o === "");
     };
 
     const handleSubmit = () => {
@@ -142,13 +143,13 @@ const ProductForm = () => {
 
     return (
         <Paper elevation={1} sx={{ padding: 4 }}>
-            <Typography variant="h2" sx={{ marginBottom: 3, textAlign: 'center' }}>
-                {isAddMode ? 'Ajouter un produit' : 'Modifier le produit'}
+            <Typography variant={isMobile ? "h4" : isTablette ? "h3" : "h2"} sx={{ marginBottom: 3, textAlign: 'center' }}>
+                {isAddMode ? t('products.form.ADD_PRODUCT') : t('products.form.EDIT_PRODUCT')}
             </Typography>
 
-            <FormControl sx={{ display: 'block', ml: 'auto', mr: 'auto', width: '75%', mb: 3 }}>
-                <Divider>Nom du produit</Divider>
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4, mt: 2, mb: 6 }}>
+            <FormControl sx={{ display: 'block', ml: 'auto', mr: 'auto', width: isMobile ? '100%' : '75%', mb: 3 }}>
+                <Divider>{t('products.form.nom_product')}</Divider>
+                <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 4, mt: 2, mb: 6 }}>
                     <TextField
                         autoFocus
                         required
@@ -158,7 +159,7 @@ const ProductForm = () => {
                         fullWidth
                         error={!!errors.nameFr}
                         helperText={errors.nameFr}
-                        sx={{ width: '50%' }}
+                        sx={{ width: isMobile ? '100%' : '50%' }}
                     />
                     <TextField
                         autoFocus
@@ -168,12 +169,12 @@ const ProductForm = () => {
                         fullWidth
                         error={!!errors.nameEn}
                         helperText={errors.nameEn}
-                        sx={{ width: '50%' }}
+                        sx={{ width: isMobile ? '100%' : '50%' }}
                     />
                 </Box>
 
-                <Divider>Description</Divider>
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4, mt: 2, mb: 6 }}>
+                <Divider>{t('products.form.description')}</Divider>
+                <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 4, mt: 2, mb: 6 }}>
                     <TextField
                         autoFocus
                         multiline
@@ -182,9 +183,8 @@ const ProductForm = () => {
                         value={getLocalizedProduct(product.localizedProducts, Locale.FR).description}
                         onChange={(e) => handleChange(Locale.FR, 'description', e.target.value)}
                         fullWidth
-                        sx={{ width: '50%' }}
+                        sx={{ width: isMobile ? '100%' : '50%' }}
                     />
-
                     <TextField
                         autoFocus
                         multiline
@@ -193,12 +193,12 @@ const ProductForm = () => {
                         value={getLocalizedProduct(product.localizedProducts, Locale.EN).description}
                         onChange={(e) => handleChange(Locale.EN, 'description', e.target.value)}
                         fullWidth
-                        sx={{ width: '50%' }}
+                        sx={{ width: isMobile ? '100%' : '50%' }}
                     />
                 </Box>
 
-                <Divider>Informations supplémentaires</Divider>
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4, mt: 2, mb: 3 }}>
+                <Divider>{t('products.form.info_supplementaire')}</Divider>
+                <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 4, mt: 2, mb: 3 }}>
                     <TextField
                         autoFocus
                         required
@@ -209,13 +209,15 @@ const ProductForm = () => {
                         fullWidth
                         InputProps={{
                             endAdornment: <InputAdornment position="end">€</InputAdornment>,
+                            inputProps: {
+                                step: "0.01",
+                            },
                         }}
                         error={!!errors.price}
                         helperText={errors.price}
-                        sx={{ width: '50%' }}
+                        sx={{ width: isMobile ? '100%' : '50%' }}
                     />
-
-                    <Box sx={{ width: '50%' }}>
+                    <Box sx={{ width: isMobile ? '100%' : '50%' }}>
                         <SelectPaginate
                             value={product.shop}
                             onChange={setShop}
@@ -226,7 +228,7 @@ const ProductForm = () => {
                     </Box>
                 </Box>
 
-                <Box sx={{ mt: 2 }}>
+                <Box sx={{ mb: 2 }}>
                     <SelectPaginate
                         isMulti
                         value={product.categories}
@@ -236,13 +238,13 @@ const ProductForm = () => {
                         defaultLabel="Aucune"
                     />
                 </Box>
-            </FormControl>
 
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Button variant="contained" onClick={handleSubmit}>
-                    Valider
-                </Button>
-            </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button onClick={handleSubmit} variant="contained" size="large" sx={{ width: '30%' }}>
+                        {isAddMode ? t('products.form.btn_create') : t('products.form.btn_edit')}
+                    </Button>
+                </Box>
+            </FormControl>
         </Paper>
     );
 };

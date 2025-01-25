@@ -7,22 +7,17 @@ import { ShopService } from '../services';
 import { Shop } from '../types';
 import { useAppContext, useToastContext } from '../context';
 import { pluralize } from '../utils';
-
-const DAY: Record<number, string> = {
-    1: 'Lundi',
-    2: 'Mardi',
-    3: 'Mercredi',
-    4: 'Jeudi',
-    5: 'Vendredi',
-    6: 'Samedi',
-    7: 'Dimanche',
-};
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
+import { useTranslation } from 'react-i18next';
 
 const ShopDetails = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    const { setToast } = useToastContext();
     const [shop, setShop] = useState<Shop | null>(null);
 
     const getShop = (shopId: string) => {
@@ -42,19 +37,15 @@ const ShopDetails = () => {
     };
 
     const handleDelete = () => {
-        setLoading(true);
-        id &&
-            ShopService.deleteShop(id)
-                .then(() => {
-                    navigate('/');
-                    setToast({ severity: 'success', message: 'La boutique a bien été supprimée' });
-                })
-                .catch(() => {
-                    setToast({ severity: 'error', message: 'Une erreur est survenue lors de la suppresion' });
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+        if (!id) return; 
+        handleAction(
+            ShopService.deleteShop(id), 
+            'La boutique a bien été supprimée',
+            '/',
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
 
     const handleEdit = () => {
@@ -68,22 +59,23 @@ const ShopDetails = () => {
             elevation={1}
             sx={{
                 position: 'relative',
-                padding: 4,
+                padding: 4,display: 'flex', flexDirection: 'column', alignItems: 'center',
+                width: '100%',
             }}
         >
             <ActionButtons handleDelete={handleDelete} handleEdit={handleEdit} />
 
-            <Typography variant="h3" sx={{ textAlign: 'center', marginBottom: 3 }}>
+            <Typography variant="h3" sx={{ textAlign: 'center', marginBottom: 3, fontSize: { xs: '1.5rem', sm: '2rem' } }}>
                 {shop.name}
             </Typography>
-            <Typography variant="h6">
-                Cette boutique comporte {shop.nbProducts} {pluralize('produit', shop.nbProducts)}
+            <Typography variant="h6" sx={{ textAlign: 'center' }}>
+            {t('shop_details.details.nbrProducts')} {shop.nbProducts} {pluralize('produit', shop.nbProducts)}
             </Typography>
-            <Typography sx={{ my: 1 }}>
-                {shop.inVacations ? 'En congé actuellement' : "N'est pas en congé actuellement"}
+            <Typography sx={{ my: 1, textAlign: 'center' }}>
+                {shop.inVacations ? t('shop_details.details.inVacations') : t('shop_details.details.notVacations')}
             </Typography>
-            <Typography sx={{ my: 1 }} color="text.secondary">
-                Boutique créée le : {moment(shop.createdAt).format('DD/MM/YYYY')}
+            <Typography sx={{ my: 1, color: 'text.secondary', textAlign: 'center' }}>
+            {t('shop_details.details.createdAt')} {moment(shop.createdAt).format('DD/MM/YYYY')}
             </Typography>
 
             <Box
@@ -92,24 +84,25 @@ const ShopDetails = () => {
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    my: 4,
+                    my: 4, width: '100%',
                 }}
             >
-                <Typography variant="h4" sx={{ mb: 2 }}>
-                    Horaires d&apos;ouverture :
+                <Typography variant="h4" sx={{ mb: 2, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
+                {t('shop_details.details.heure_ouverture')}
                 </Typography>
                 {shop.openingHours.map((openingHour) => (
                     <Box
                         key={openingHour.id}
                         sx={{
-                            width: 200,
+                            width: { xs: '100%', sm: '200px' },
                             display: 'flex',
                             flexDirection: 'row',
                             alignItems: 'center',
-                            justifyContent: 'space-between',
+                            justifyContent: 'space-between', mb: 2,
+                            textAlign: { xs: 'center', sm: 'left' },
                         }}
                     >
-                        <Typography sx={{ mb: 1.5 }}>{DAY[openingHour.day]}</Typography>
+                        <Typography sx={{ mb: 1.5 }}>{t(`openingDays.${openingHour.day}`)}</Typography>
                         <Typography sx={{ mb: 1.5 }}>
                             {displayHours(openingHour?.openAt)} - {displayHours(openingHour?.closeAt)}
                         </Typography>
@@ -117,8 +110,8 @@ const ShopDetails = () => {
                 ))}
             </Box>
 
-            <Typography variant="h4" sx={{ textAlign: 'center', mb: 2 }}>
-                Les produits :
+            <Typography variant="h4" sx={{ textAlign: 'center', mb: 2, fontSize: { xs: '1.5rem', sm: '1.75rem' } }}>
+            {t('shop_details.details.products')}
             </Typography>
             {id && <ShopProducts shopId={id} />}
         </Paper>

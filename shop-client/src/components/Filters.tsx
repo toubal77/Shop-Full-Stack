@@ -9,18 +9,22 @@ import {
     MenuItem,
     Select,
     TextField,
+    TextFieldProps,
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Dayjs } from 'dayjs';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type FiltersType = {
     inVacations: string;
     createdAfter: Dayjs | null;
     createdBefore: Dayjs | null;
 };
+
+const renderTextField = (params: TextFieldProps) => <TextField {...params} />;
 
 const transformFiltersToURL = (filters: FiltersType): string => {
     const transform = {
@@ -51,6 +55,7 @@ const Filters = ({ setUrlFilters, setSort, sort }: Props) => {
         createdAfter: null,
         createdBefore: null,
     };
+    const { t } = useTranslation();
     const [open, setOpen] = useState<boolean>(false);
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
 
@@ -82,15 +87,15 @@ const Filters = ({ setUrlFilters, setSort, sort }: Props) => {
     return (
         <>
             <Button variant="contained" onClick={handleClickButton}>
-                Filtrer
+                {t('filters.LBL_BTN')}
             </Button>
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Filtrer les boutiques</DialogTitle>
+                <DialogTitle>{t('filters.title')}</DialogTitle>
 
                 <DialogContent>
                     <FormControl fullWidth sx={{ marginTop: 2 }}>
-                        <InputLabel id="demo-simple-select-label">Congé</InputLabel>
+                        <InputLabel id="demo-simple-select-label">{t('filters.vacations')}</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
@@ -99,10 +104,10 @@ const Filters = ({ setUrlFilters, setSort, sort }: Props) => {
                             onChange={(e) => handleChange('inVacations', e.target.value)}
                         >
                             <MenuItem value="">
-                                <em>Aucun</em>
+                                <em>{t('filters.empty')}</em>
                             </MenuItem>
-                            <MenuItem value="true">En congé</MenuItem>
-                            <MenuItem value="false">Pas en congé</MenuItem>
+                            <MenuItem value="true">{t('filters.inVacations')}</MenuItem>
+                            <MenuItem value="false">{t('filters.notVacations')}</MenuItem>
                         </Select>
                     </FormControl>
                 </DialogContent>
@@ -111,10 +116,10 @@ const Filters = ({ setUrlFilters, setSort, sort }: Props) => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DesktopDatePicker
                             label="Créée après"
-                            inputFormat="DD/MM/YYYY"
+                            format="DD/MM/YYYY"
                             value={filters.createdAfter}
                             onChange={(v: Dayjs | null) => handleChange('createdAfter', v)}
-                            renderInput={(params) => <TextField {...params} />}
+                            slotProps={{ textField: { fullWidth: true } }}
                         />
                     </LocalizationProvider>
                 </DialogContent>
@@ -123,22 +128,22 @@ const Filters = ({ setUrlFilters, setSort, sort }: Props) => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DesktopDatePicker
                             label="Créée avant"
-                            inputFormat="DD/MM/YYYY"
+                            format="DD/MM/YYYY"
                             value={filters.createdBefore}
                             onChange={(v: Dayjs | null) => handleChange('createdBefore', v)}
-                            renderInput={(params) => <TextField {...params} />}
+                            slotProps={{ textField: { fullWidth: true } }}
                         />
                     </LocalizationProvider>
                 </DialogContent>
 
                 <DialogActions>
                     <Button autoFocus onClick={handleClear}>
-                        Effacer
+                        {t('filters.LBL_BTN_DELETE')}
                     </Button>
                     <Button autoFocus onClick={handleClose}>
-                        Annuler
+                        {t('filters.LBL_BTN_CANCEL')}
                     </Button>
-                    <Button onClick={handleValidate}>Valider</Button>
+                    <Button onClick={handleValidate}>{t('filters.LBL_BTN_VALID')}</Button>
                 </DialogActions>
             </Dialog>
         </>

@@ -9,8 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,7 +78,7 @@ public class CategoryService {
     private Category getCategory(Long id) throws Exception {
         Optional<Category> category = categoryRepository.findById(id);
         if (!category.isPresent()) {
-            throw new Exception("Category with id " + id + " not found");
+            throw new Exception("Catégorie avec id " + id + " non trouvé");
         }
         return category.get();
     }

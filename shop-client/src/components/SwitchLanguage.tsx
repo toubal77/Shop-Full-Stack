@@ -2,14 +2,17 @@ import { IconButton, Menu, MenuItem } from '@mui/material';
 import { useState } from 'react';
 import LanguageIcon from '@mui/icons-material/Language';
 import Locale from '../types/locale';
+import { useTranslation } from 'react-i18next';
 import { useAppContext } from '../context';
 
 const SwitchLanguage = () => {
+    const { i18n } = useTranslation();
     const { setLocale, locale } = useAppContext();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-    const handleClick = (locale: Locale) => {
-        setLocale(locale);
+    const handleClick = (lang: string) => {
+        i18n.changeLanguage(lang); 
+        setLocale(lang === "FR" ? Locale.FR : Locale.EN);
         handleClose();
     };
 
@@ -42,16 +45,10 @@ const SwitchLanguage = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <MenuItem
-                    onClick={() => handleClick(Locale.FR)}
-                    sx={{ backgroundColor: locale == 'FR' ? '#f2f5f6' : 'white' }}
-                >
+                <MenuItem onClick={() => handleClick('FR')}>
                     Français
                 </MenuItem>
-                <MenuItem
-                    onClick={() => handleClick(Locale.EN)}
-                    sx={{ backgroundColor: locale == 'EN' ? '#f2f5f6' : 'white' }}
-                >
+                <MenuItem onClick={() => handleClick('EN')}>
                     Anglais
                 </MenuItem>
             </Menu>

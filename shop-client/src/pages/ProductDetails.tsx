@@ -6,12 +6,17 @@ import { useAppContext, useToastContext } from '../context';
 import { ProductService } from '../services';
 import { FormattedProduct, Product } from '../types';
 import { formatterLocalizedProduct, priceFormatter } from '../utils';
+import { useTranslation } from 'react-i18next';
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
 
 const ProductDetails = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading, locale } = useAppContext();
-    const { setToast } = useToastContext();
     const [product, setProduct] = useState<Product | null>(null);
     const [formattedProduct, setFormattedProduct] = useState<FormattedProduct | null>();
 
@@ -30,19 +35,15 @@ const ProductDetails = () => {
     }, [locale, product]);
 
     const handleDelete = () => {
-        setLoading(true);
-        id &&
-            ProductService.deleteProduct(id)
-                .then(() => {
-                    navigate('/product');
-                    setToast({ severity: 'success', message: 'Le produit a bien été supprimé' });
-                })
-                .catch(() => {
-                    setToast({ severity: 'error', message: 'Une erreur est survenue lors de la suppresion' });
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+        if (!id) return; 
+        handleAction(
+            ProductService.deleteProduct(id),
+            'Le produit a bien été supprimé',
+            '/',
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
 
     const handleEdit = () => {
@@ -55,35 +56,45 @@ const ProductDetails = () => {
         <Paper
             elevation={1}
             sx={{
-                position: 'relative',
-                padding: 4,
+                position: 'relative', padding: { xs: 2, sm: 4 }, maxWidth: '100%', margin: 'auto',
+                '@media (max-width: 600px)': {
+                    padding: 2, 
+                },
             }}
         >
             <ActionButtons handleDelete={handleDelete} handleEdit={handleEdit} />
 
-            <Typography variant="h3" sx={{ textAlign: 'center', marginBottom: 3 }}>
+            <Typography
+                variant="h3"
+                sx={{
+                    textAlign: 'center', marginBottom: 3,
+                    fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' },
+                }}
+            >
                 {formattedProduct.name}
             </Typography>
-            <Typography variant="h6">Prix : {priceFormatter(formattedProduct.price)}</Typography>
+            <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.2rem' } }}>
+                {t('product_details.details.prix')} : {priceFormatter(formattedProduct.price)}
+            </Typography>
             {formattedProduct.description && (
-                <Typography sx={{ mt: 1.5 }} color="text.secondary">
-                    Description : {formattedProduct.description}
+                <Typography sx={{ mt: 1.5, fontSize: { xs: '0.9rem', sm: '1rem' } }} color="text.secondary">
+                    {t('product_details.details.description')} : {formattedProduct.description}
                 </Typography>
             )}
-            <Typography sx={{ mt: 1.5 }}>
-                Boutique :{' '}
+            <Typography sx={{ mt: 1.5, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+                {t('product_details.details.boutique')} :{' '}
                 {formattedProduct.shop?.name ? (
                     <Link to={`/shop/${formattedProduct.shop?.id}`} style={{ color: '#607d8b' }}>
                         {formattedProduct.shop?.name}
                     </Link>
                 ) : (
-                    "N'appartient à aucune boutique"
+                    t('product_details.details.boutique_empty')
                 )}
             </Typography>
-            <Typography sx={{ mt: 1.5, fontStyle: 'italic' }}>
-                Catégories : {''}
+            <Typography sx={{ mt: 1.5, fontStyle: 'italic', fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+            {t('product_details.details.categorie')} : {''}
                 {formattedProduct.categories.length === 0
-                    ? 'Aucune'
+                    ? t('product_details.details.empty')
                     : formattedProduct.categories.map((cat, index) => (
                           <Fragment key={cat.id}>
                               <Link to={`/category/${cat.id}`} style={{ color: '#607d8b' }}>

@@ -1,24 +1,33 @@
-import { Box, Button, Divider, FormControl, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, FormControl, Paper, TextField, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppContext, useToastContext } from '../context';
 import { CategoryService } from '../services';
 import { MinimalCategory, ObjectPropertyString } from '../types';
+import { useTranslation } from 'react-i18next';
+import { useAppDispatch } from '../context/hooks';
+import { setToast } from '../context/ToastSlice';
+import { handleAction } from '../utils/actionHandler';
 
-const schema = (category: MinimalCategory) => ({
-    name: category.name ? '' : 'Ce champ est requis',
-});
+const schema = (category: MinimalCategory, t: any) => ({
+    name: category.name ? "" : t("categories.form.champ_requis"),
+  });
 
 const CategoryForm = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const isAddMode = !id;
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    const { setToast } = useToastContext();
     const [errors, setErrors] = useState<ObjectPropertyString<MinimalCategory>>();
     const [category, setCategory] = useState<MinimalCategory>({
         name: '',
     });
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isTablette = useMediaQuery(theme.breakpoints.down('md'));
 
     const getCategory = (categoryId: string) => {
         setLoading(true);
@@ -37,38 +46,31 @@ const CategoryForm = () => {
     }, [isAddMode]);
 
     const createCategory = () => {
-        setLoading(true);
-        CategoryService.createCategory(category)
-            .then(() => {
-                navigate('/category');
-                setToast({ severity: 'success', message: 'La catégorie a bien été créée' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la création' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleAction(
+            CategoryService.createCategory(category),
+            'La catégorie a bien été créée',
+            `/category`,
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
 
     const editCategory = () => {
-        setLoading(true);
-        CategoryService.editCategory(category)
-            .then(() => {
-                navigate(`/category/${id}`);
-                setToast({ severity: 'success', message: 'La catégorie a bien été modifiée' });
-            })
-            .catch(() => {
-                setToast({ severity: 'error', message: 'Une erreur est survenue lors de la modification' });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        handleAction(
+            CategoryService.editCategory(category),
+            'La catégorie a bien été modifiée',
+            `/category/${id}`,
+            dispatch,
+            navigate,
+            setLoading
+        );
     };
 
     const validate = () => {
-        setErrors(schema(category));
-        return Object.values(schema(category)).every((o) => o == '');
+        const validationErrors = schema(category, t);
+        setErrors(validationErrors);
+        return Object.values(validationErrors).every((o) => o === "");
     };
 
     const handleSubmit = () => {
@@ -82,8 +84,8 @@ const CategoryForm = () => {
 
     return (
         <Paper elevation={1} sx={{ padding: 4 }}>
-            <Typography variant="h2" sx={{ marginBottom: 3, textAlign: 'center' }}>
-                {isAddMode ? 'Ajouter une catégorie' : 'Modifier la catégorie'}
+            <Typography variant={isMobile ? "h4": isTablette ? "h3": "h2"} sx={{ marginBottom: 3, textAlign: 'center' }}>
+                {isAddMode ? t('categories.form.ADD_CATEGORIE') : t('categories.form.EDIT_CATEGORIE')}
             </Typography>
 
             <FormControl
@@ -96,7 +98,7 @@ const CategoryForm = () => {
                     mb: 2,
                 }}
             >
-                <Divider>Informations de la catégorie</Divider>
+                <Divider>{t('categories.form.info_categorie')}</Divider>
                 <TextField
                     autoFocus
                     required
@@ -105,13 +107,13 @@ const CategoryForm = () => {
                     onChange={(e) => setCategory({ ...category, name: e.target.value })}
                     error={!!errors?.name}
                     helperText={errors?.name}
-                    sx={{ my: 2, width: '75%', ml: 'auto', mr: 'auto' }}
+                    sx={{ my: 2, width: '85%', ml: 'auto', mr: 'auto' }}
                 />
             </FormControl>
 
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Button variant="contained" onClick={handleSubmit}>
-                    Valider
+                    {t('categories.form.BTN_FORM')}
                 </Button>
             </Box>
         </Paper>

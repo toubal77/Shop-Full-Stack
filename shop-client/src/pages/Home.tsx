@@ -9,6 +9,8 @@ import {
     Select,
     SelectChangeEvent,
     Typography,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
@@ -17,8 +19,10 @@ import { Filters, ShopCard } from '../components';
 import { useAppContext } from '../context';
 import { ShopService } from '../services';
 import { ResponseArray, Shop } from '../types';
+import { useTranslation } from 'react-i18next';
 
 const Home = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { setLoading } = useAppContext();
     const [shops, setShops] = useState<Shop[] | null>(null);
@@ -28,6 +32,9 @@ const Home = () => {
 
     const [sort, setSort] = useState<string>('');
     const [filters, setFilters] = useState<string>('');
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const getShops = () => {
         setLoading(true);
@@ -61,34 +68,41 @@ const Home = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
-            <Typography variant="h2">Les boutiques</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            <Typography variant={isMobile ? 'h4' : 'h2'} textAlign="center">
+                {t('home.title')}
+            </Typography>
 
             <Box
                 sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
+                    width: '100%', display: 'flex', flexDirection: isMobile ? 'column' : 'row',
+                    justifyContent: isMobile ? 'center' : 'flex-end', alignItems: 'center', gap: 2,
                 }}
             >
-                <Fab variant="extended" color="primary" aria-label="add" onClick={() => navigate('/shop/create')}>
+                <Fab
+                    variant="extended" color="primary" aria-label="add"
+                    onClick={() => navigate('/shop/create')}
+                    sx={{
+                        width: isMobile ? '100%' : 'auto',
+                    }}
+                >
                     <AddIcon sx={{ mr: 1 }} />
-                    Ajouter une boutique
+                    {t('home.LBL_ADD_SHOP')}
                 </Fab>
             </Box>
 
             {/* Sort and filters */}
             <Box
                 sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'row',
+                    width: '100%', display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
                     justifyContent: 'space-between',
+                    alignItems: isMobile ? 'stretch' : 'center',
+                    gap: 2,
                 }}
             >
                 <FormControl sx={{ minWidth: 200 }}>
-                    <InputLabel id="demo-simple-select-label">Trier par</InputLabel>
+                    <InputLabel id="demo-simple-select-label">{t('home.filters.trier_par')}</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -97,11 +111,11 @@ const Home = () => {
                         onChange={handleChangeSort}
                     >
                         <MenuItem value="">
-                            <em>Aucun</em>
+                            <em>{t('home.filters.default_value')}</em>
                         </MenuItem>
-                        <MenuItem value="name">Nom</MenuItem>
-                        <MenuItem value="createdAt">Date de création</MenuItem>
-                        <MenuItem value="nbProducts">Nombre de produits</MenuItem>
+                        <MenuItem value="name">{t('home.filters.name')}</MenuItem>
+                        <MenuItem value="createdAt">{t('home.filters.createdAt')}</MenuItem>
+                        <MenuItem value="nbProducts">{t('home.filters.nbProducts')}</MenuItem>
                     </Select>
                 </FormControl>
 
@@ -109,20 +123,39 @@ const Home = () => {
             </Box>
 
             {/* Shops */}
-            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
-                {shops?.map((shop) => (
-                    <Grid item key={shop.id} xs={4}>
-                        <ShopCard shop={shop} />
+            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3} sx={{ width: '100%' }}>
+                {shops && shops.length > 0 ? (
+                    shops.map((shop) => (
+                        <Grid item key={shop.id} xs={12} sm={6} md={4}>
+                            <ShopCard shop={shop} />
+                        </Grid>
+                    ))
+                ) : (
+                    <Grid item xs={12} sx={{ textAlign: 'center', marginTop: 3 }}>
+                        <Typography variant="h6" color="textSecondary">
+                            Aucune boutique trouvée
+                        </Typography>
                     </Grid>
-                ))}
+                )}
             </Grid>
 
             {/* Pagination */}
             {shops?.length !== 0 ? (
-                <Pagination count={count} page={page} siblingCount={1} onChange={handleChangePagination} />
+                <Pagination
+                    count={count}
+                    page={page}
+                    siblingCount={1}
+                    onChange={handleChangePagination}
+                    sx={{
+                        marginTop: 3,
+                        '& .MuiPaginationItem-root': {
+                            fontSize: { xs: '0.8rem', sm: '1rem' },
+                        },
+                    }}
+                />
             ) : (
                 <Typography variant="h5" sx={{ mt: -1 }}>
-                    Aucune boutique correspondante
+                    t('home.list_vide')
                 </Typography>
             )}
         </Box>
