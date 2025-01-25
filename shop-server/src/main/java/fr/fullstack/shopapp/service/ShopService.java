@@ -109,7 +109,7 @@ public class ShopService {
     private Shop getShop(Long id) throws Exception {
         Optional<Shop> shop = shopRepository.findById(id);
         if (!shop.isPresent()) {
-            throw new Exception("Shop with id " + id + " not found");
+            throw new Exception("Boutique avec id " + id + " non trouvé");
         }
         return shop.get();
     }

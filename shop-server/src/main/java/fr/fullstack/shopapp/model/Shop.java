@@ -19,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
+import jakarta.persistence.Index;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
@@ -29,8 +30,14 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "shops")
-@Indexed
+@Table(
+    name = "shops",
+    indexes = {
+        @Index(name = "idx_shop_name", columnList = "name"),
+        @Index(name = "idx_shop_in_vacations", columnList = "inVacations"),
+        @Index(name = "idx_shop_created_at", columnList = "created_at")
+    }
+)
 public class Shop {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -50,7 +57,7 @@ public class Shop {
     private LocalDate createdAt;
 
     @Column(nullable = false)
-    @NotNull(message = "InVacations may not be null")
+    @NotNull(message = "Veuillez indiquer si vous êtes en congé ou non")
     @GenericField
     private boolean inVacations;
 

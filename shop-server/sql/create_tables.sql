@@ -58,6 +58,13 @@ create table translation (
     primary key (id)
 );
 
+create index idx_shops_name on shops(name);
+create index idx_shop_in_vacations on shops(in_vacations);
+create index idx_shop_created_at on shops(created_at);
+create index idx_products_categories_product_id on products_categories(product_id);
+create index idx_products_categories_category_id on products_categories(category_id);
+create index idx_categories_name on categories(name);
+
 alter table products_localized_product
 add constraint UK_n8q0vltkv2dgjclj2aqn26l03 unique(localized_product_id);
 

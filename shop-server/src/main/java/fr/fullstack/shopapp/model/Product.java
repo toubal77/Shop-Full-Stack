@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -20,13 +21,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "products")
+@Table(
+    name = "products",
+    indexes = @Index(name = "idx_shop_id", columnList = "shop_id")
+)
 public class Product {
     @ManyToMany
     @JoinTable(
-            name = "products_categories",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
+        name = "products_categories",
+        joinColumns = @JoinColumn(name = "product_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id"),
+        indexes = {
+            @Index(name = "idx_product_id", columnList = "product_id"),
+            @Index(name = "idx_category_id", columnList = "category_id")
+        }
+    )
     private List<Category> categories = new ArrayList<Category>();
 
     @Id
@@ -34,12 +43,12 @@ public class Product {
     private long id;
 
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @Size(min = 1, message = "At least one name and one description must be provided")
+    @Size(min = 1, message = "Au moins un nom et une description doivent être fournis")
     private List<@Valid LocalizedProduct> localizedProduct = new ArrayList<LocalizedProduct>();
 
     @Column(nullable = false)
-    @PositiveOrZero(message = "Price must be positive")
-    @NotNull(message = "Price may not be null")
+    @PositiveOrZero(message = "Le prix doit être positif")
+    @NotNull(message = "Le prix peut ne pas être nul")
     private float price;
 
     @ManyToOne
