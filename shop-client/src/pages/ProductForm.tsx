@@ -210,6 +210,9 @@ const ProductForm = () => {
                         fullWidth
                         InputProps={{
                             endAdornment: <InputAdornment position="end">€</InputAdornment>,
+                            inputProps: {
+                                step: "0.01",
+                            },
                         }}
                         error={!!errors.price}
                         helperText={errors.price}

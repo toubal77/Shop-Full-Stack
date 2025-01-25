@@ -90,13 +90,57 @@ const ShopForm = () => {
         !isAddMode && id && getShop(id);
     }, [isAddMode]);
 
+    const hasConflict = (openingHours: any[]) => {
+        const groupedByDay = openingHours.reduce((acc: any, curr: any) => {
+            if (!acc[curr.day]) acc[curr.day] = [];
+            acc[curr.day].push(curr);
+            return acc;
+        }, {});
+    
+        for (const day in groupedByDay) {
+            const dayHours = groupedByDay[day];
+            for (let i = 0; i < dayHours.length; i++) {
+                for (let j = i + 1; j < dayHours.length; j++) {
+                    const startA = dayHours[i].openAt;
+                    const endA = dayHours[i].closeAt;
+                    const startB = dayHours[j].openAt;
+                    const endB = dayHours[j].closeAt;
+    
+                    if (
+                        (startA < endB && endA > startB) // Overlapping condition
+                    ) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    };
+    
+
     const handleChange = (index: number, key: string, value: number | string | undefined) => {
-        const openingHours = shop.openingHours;
-        const openingHour = {
-            ...openingHours[index],
-            [key]: value,
-        };
+        const openingHours = [...shop.openingHours];
+        const openingHour = { ...openingHours[index], [key]: value };
         openingHours[index] = openingHour;
+    
+        if (key === 'openAt' || key === 'closeAt') {
+            const openTime = openingHour.openAt || openingHours[index].openAt;
+            const closeTime = openingHour.closeAt || openingHours[index].closeAt;
+    
+            if (openTime && closeTime && openTime >= closeTime) {
+                setToast({
+                    severity: 'error',
+                    message: "L'heure de fermeture ne peut pas être avant l'heure d'ouverture",
+                });
+                return;
+            }
+        }
+    
+        if (hasConflict(openingHours)) {
+            setToast({severity: 'error', message: "Les horaires se chevauchent pour un même jour"});
+            return;
+        }
+    
         setShop({ ...shop, openingHours });
     };
 
@@ -109,9 +153,12 @@ const ShopForm = () => {
     };
 
     const validate = () => {
-        const validationErrors = schema(shop, t);
-        setErrors(validationErrors);
-        return Object.values(validationErrors).every((o) => o === "");
+        if (hasConflict(shop.openingHours)) {
+            setToast({severity: 'error', message: 'Les horaires se chevauchent pour un même jour'});
+            return false;
+        }
+        setErrors(schema(shop));
+        return Object.values(schema(shop)).every((o) => o == '');
     };
 
     const handleSubmit = () => {
