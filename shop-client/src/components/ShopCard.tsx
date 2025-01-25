@@ -17,24 +17,43 @@ const ShopCard = ({ shop }: Props) => {
     const { t } = useTranslation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    
-    const handleClick = () => {
-        navigate(`/shop/${shop.id}`);
-    };
 
     return (
-        <Card sx={{ minWidth: isMobile ? 275: 175, cursor: 'pointer' }} onClick={handleClick}>
-            <CardContent>
-                <Typography variant="h4" color="text.primary" gutterBottom sx={{ textAlign: 'center' }}>
+        <Card
+            sx={{
+                minWidth: isMobile ? '100%' : 175,
+                cursor: 'pointer',
+                margin: isMobile ? '8px 0' : '8px',
+            }}
+            onClick={() => navigate(`/shop/${shop.id}`)}
+        >
+            <CardContent sx={{ padding: isMobile ? '16px' : '24px' }}>
+                <Typography
+                    variant="h4"
+                    color="text.primary"
+                    gutterBottom
+                    sx={{
+                        textAlign: 'center',
+                        fontSize: isMobile ? '1.5rem' : '2rem',
+                    }}
+                >
                     {shop.name}
                 </Typography>
-                <Typography variant="h6">
+                <Typography variant="h6" sx={{ fontSize: isMobile ? '1rem' : '1.25rem' }}>
                     {shop.nbProducts} {pluralize('produit', shop.nbProducts)}
                 </Typography>
-                <Typography sx={{ my: 1.5 }} color="text.secondary">
+                <Typography
+                    sx={{
+                        my: 1.5,
+                        color: 'text.secondary',
+                        fontSize: isMobile ? '0.875rem' : '1rem',
+                    }}
+                >
                     {t('shopCard.createdAt')} {moment(shop.createdAt).format('DD/MM/YYYY')}
                 </Typography>
-                <Typography>{t('shopCard.vacations')} {shop.inVacations ? 'oui' : 'non'}</Typography>
+                <Typography sx={{ fontSize: isMobile ? '0.875rem' : '1rem' }}>
+                    {t('shopCard.vacations')} {shop.inVacations ? 'oui' : 'non'}
+                </Typography>
             </CardContent>
         </Card>
     );
