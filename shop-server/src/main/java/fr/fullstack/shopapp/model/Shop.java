@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
+import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,7 +19,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
-import jakarta.persistence.Index;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
@@ -28,14 +29,8 @@ import java.util.List;
 
 
 @Entity
-@Table(
-    name = "shops",
-    indexes = {
-        @Index(name = "idx_shop_name", columnList = "name"),
-        @Index(name = "idx_shop_in_vacations", columnList = "inVacations"),
-        @Index(name = "idx_shop_created_at", columnList = "created_at")
-    }
-)
+@Table(name = "shops")
+@Indexed
 public class Shop {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -55,12 +50,12 @@ public class Shop {
     private LocalDate createdAt;
 
     @Column(nullable = false)
-    @NotNull(message = "Veuillez indiquer si vous êtes en congé ou non")
+    @NotNull(message = "InVacations may not be null")
     @GenericField
     private boolean inVacations;
 
-        @Formula(value = "(SELECT COUNT(*) FROM products p WHERE p.shop_id = id)")
-        private Long nbProducts;
+    @Formula(value = "(SELECT COUNT(*) FROM products p WHERE p.shop_id = id)")
+    private Long nbProducts;
 
     @OneToMany(cascade = {CascadeType.ALL})
     private List<@Valid OpeningHoursShop> openingHours = new ArrayList<OpeningHoursShop>();
