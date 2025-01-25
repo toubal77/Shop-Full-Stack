@@ -82,7 +82,11 @@ public class ElasticsearchService {
     @Transactional
     public void reindexAll() throws InterruptedException {
         SearchSession searchSession = Search.session(entityManager);
-        searchSession.massIndexer()
+        searchSession.massIndexer(Shop.class)  // Spécifier explicitement la classe
+                .dropAndCreateSchemaOnStart(true)  // Recréer le schéma
+                .typesToIndexInParallel(1)  // Limiter le parallélisme
+                .batchSizeToLoadObjects(10)  // Réduire la taille des lots
+                .threadsToLoadObjects(1)     // Limiter les threads
                 .startAndWait();
     }
 }
