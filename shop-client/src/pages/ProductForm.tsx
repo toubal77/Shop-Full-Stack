@@ -27,7 +27,6 @@ const ProductForm = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    //const { setToast } = useToastContext();
     const [errors, setErrors] = useState<any>({});
     const [product, setProduct] = useState<MinimalProduct>({
         price: 0,

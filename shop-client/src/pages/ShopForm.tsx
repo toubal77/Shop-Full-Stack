@@ -24,7 +24,7 @@ import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Dayjs } from 'dayjs';
 import { MinimalShop, ObjectPropertyString } from '../types';
-import { useAppContext, useToastContext } from '../context';
+import { useAppContext } from '../context';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '../context/hooks';
 import { setToast } from '../context/ToastSlice';
@@ -40,7 +40,6 @@ const ShopForm = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    //const { setToast } = useToastContext();
     const [errors, setErrors] = useState<ObjectPropertyString<MinimalShop>>();
     const [shop, setShop] = useState<MinimalShop>({
         name: '',
@@ -157,8 +156,8 @@ const ShopForm = () => {
             setToast({severity: 'error', message: 'Les horaires se chevauchent pour un même jour'});
             return false;
         }
-        setErrors(schema(shop));
-        return Object.values(schema(shop)).every((o) => o == '');
+        setErrors(schema(shop, t));
+        return Object.values(schema(shop, t)).every((o) => o == '');
     };
 
     const handleSubmit = () => {

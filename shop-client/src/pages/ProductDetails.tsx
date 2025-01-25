@@ -17,7 +17,6 @@ const ProductDetails = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { setLoading, locale } = useAppContext();
-    //const { setToast } = useToastContext();
     const [product, setProduct] = useState<Product | null>(null);
     const [formattedProduct, setFormattedProduct] = useState<FormattedProduct | null>();
 

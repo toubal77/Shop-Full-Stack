@@ -20,7 +20,6 @@ const CategoryForm = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    //const { setToast } = useToastContext();
     const [errors, setErrors] = useState<ObjectPropertyString<MinimalCategory>>();
     const [category, setCategory] = useState<MinimalCategory>({
         name: '',

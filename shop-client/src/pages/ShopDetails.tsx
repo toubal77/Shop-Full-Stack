@@ -18,7 +18,6 @@ const ShopDetails = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    //const { setToast } = useToastContext();
     const [shop, setShop] = useState<Shop | null>(null);
 
     const getShop = (shopId: string) => {

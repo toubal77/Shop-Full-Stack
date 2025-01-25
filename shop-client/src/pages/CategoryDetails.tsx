@@ -14,7 +14,6 @@ const CategoryDetails = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { setLoading } = useAppContext();
-    //const { setToast } = useToastContext();
     const [category, setCategory] = useState<Category | null>(null);
 
     const theme = useTheme();
