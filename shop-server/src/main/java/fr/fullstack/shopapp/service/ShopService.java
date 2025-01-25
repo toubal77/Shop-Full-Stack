@@ -1,5 +1,6 @@
 package fr.fullstack.shopapp.service;
 
+import fr.fullstack.shopapp.model.OpeningHoursShop;
 import fr.fullstack.shopapp.model.Product;
 import fr.fullstack.shopapp.model.Shop;
 import fr.fullstack.shopapp.repository.ShopRepository;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,8 +26,16 @@ public class ShopService {
     @Autowired
     private ShopRepository shopRepository;
 
+    @Autowired
+    private OpeningHoursService openingHoursService;
+
     @Transactional
     public Shop createShop(Shop shop) throws Exception {
+        // verification des chevauchements des heures sur la meme journée
+        if (openingHoursService.hasOverlappingHours(shop.getOpeningHours())) {
+            throw new Exception("Les horaires de la boutique se chevauchent");
+        }
+
         try {
             Shop newShop = shopRepository.save(shop);
             // Refresh the entity after the save. Otherwise, @Formula does not work.
@@ -33,7 +43,7 @@ public class ShopService {
             em.refresh(newShop);
             return newShop;
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Erreur lors de la création de la boutique: " + e.getMessage());
         }
     }
 
